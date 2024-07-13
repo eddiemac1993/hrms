@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leave List</title>
+</head>
+<body>
+    <h2>Leave List</h2>
+    <ul>
+        {% for leave in leaves %}
+            <li>{{ leave }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

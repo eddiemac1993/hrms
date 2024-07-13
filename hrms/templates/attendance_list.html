@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance List</title>
+</head>
+<body>
+    <h2>Attendance List</h2>
+    <ul>
+        {% for attendance in attendances %}
+            <li>{{ attendance }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
