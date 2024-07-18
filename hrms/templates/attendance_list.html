@@ -1,15 +1,145 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Attendance List</title>
-</head>
-<body>
-    <h2>Attendance List</h2>
-    <ul>
-        {% for attendance in attendances %}
-            <li>{{ attendance }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends 'admin_base.html' %}
+
+{% block title %}Attendance List{% endblock %}
+{% block content %}
+<style>
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .action-btns {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .add-btn, .edit-btn, .delete-btn {
+            color: #3498db;
+            margin-left: 10px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        .add-btn:hover, .edit-btn:hover, .delete-btn:hover {
+            color: #2980b9;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                transform: translateX(-100%);
+            }
+            .sidebar.expanded {
+                transform: translateX(0);
+            }
+            .close-btn {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            table, th, td {
+                font-size: 0.8em;
+            }
+        }
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2em;
+            }
+            table, th, td {
+                font-size: 0.7em;
+            }
+        }
+    </style>
+            <div class="header">
+                <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+                <h1>Welcome, Admin</h1>
+            </div>
+            <div class="content">
+                <h2>Attendance List</h2>
+                {% if request.user.is_admin %}
+                <div class="action-btns">
+                    <a href="{% url 'add_attendance' %}" class="add-btn"><i class="fas fa-calendar-plus"></i> Add New Attendance</a>
+                </div>
+                {% endif %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attendance in attendances %}
+                        <tr>
+                            <td>{{ attendance.id }}</td>
+                            <td>{{ attendance.employee.user.get_full_name }}</td>
+                            <td>{{ attendance.date }}</td>
+                            <td>{{ attendance.time_in }}</td>
+                            <td>{{ attendance.time_out }}</td>
+                            <td>{{ attendance.status }}</td>
+                            <td>
+                                {% if request.user.is_admin or request.user.employee == attendance.employee %}
+                                <a href="{% url 'edit_attendance' attendance.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="/" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-message">No attendance records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave Requests{% endblock %}
+
+{% block content %}
+    <div class="header">
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        <h1>Leave Requests</h1>
+    </div>
+    <div class="content">
+        <h2>Pending Leave Requests</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Leave Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in leave_requests %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.employee.user.get_full_name }}</td>
+                    <td>{{ request.employee.department }}</td>
+                    <td>{{ request.leave_type }}</td>
+                    <td>{{ request.start_date }}</td>
+                    <td>{{ request.end_date }}</td>
+                    <td>{{ request.status }}</td>
+                    <td>
+                        <a href="{% url 'approve_leave' request.id %}" class="btn btn-success">Approve</a>
+                        <a href="{% url 'reject_leave' request.id %}" class="btn btn-danger">Reject</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No leave requests found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

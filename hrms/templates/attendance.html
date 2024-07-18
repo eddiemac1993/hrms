@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Attendance</h2>
+{% if not attendance %}
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Clock In</button>
+    </form>
+{% elif not attendance.time_out %}
+    <p>Clocked in at: {{ attendance.time_in }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Clock Out</button>
+    </form>
+{% else %}
+    <p>Clocked in at: {{ attendance.time_in }}</p>
+    <p>Clocked out at: {{ attendance.time_out }}</p>
+{% endif %}
+{% endblock %}

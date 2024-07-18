@@ -1,15 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Manage Leaves</title>
-</head>
-<body>
-    <h2>Manage Leaves</h2>
-    <ul>
-        {% for leave in leaves %}
-            <li>{{ leave }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends 'admin_base.html' %}
+
+{% block title %}Manage Leaves{% endblock %}
+<style>
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+{% block content %}
+            <div class="header">
+                <h1>Welcome, Admin</h1>
+            </div>
+            <div class="content">
+                <h2>Manage Leaves</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave in leaves %}
+                        <tr>
+                            <td>{{ leave.id }}</td>
+                            <td>{{ leave.employee }}</td>
+                            <td>{{ leave.start_date }}</td>
+                            <td>{{ leave.end_date }}</td>
+                            <td>{{ leave.reason }}</td>
+                            <td>{{ leave.get_status_display }}</td>
+                            <td>
+                                {% if leave.document %}
+                                    <a href="{{ leave.document.url }}" class="document-link" target="_blank">View Document</a>
+                                {% else %}
+                                    <span class="empty-message">No document uploaded</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-message">No leaves found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+ {% endblock %}

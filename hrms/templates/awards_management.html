@@ -1,0 +1,108 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Awards Management{% endblock %}
+<style>
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto;
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .action-btns {
+            display: flex;
+            align-items: center;
+        }
+        .edit-btn, .delete-btn {
+            color: #3498db;
+            margin-left: 10px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        .edit-btn:hover, .delete-btn:hover {
+            color: #2980b9;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                transform: translateX(-100%);
+            }
+            .sidebar.expanded {
+                transform: translateX(0);
+            }
+            .close-btn {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            table, th, td {
+                font-size: 0.8em;
+            }
+        }
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2em;
+            }
+            table, th, td {
+                font-size: 0.7em;
+            }
+        }
+    </style>
+</head>
+{% block content %}
+<div class="header">
+    <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+    <h1>Welcome, Admin</h1>
+</div>
+<div class="content">
+    <h2>Awards Management</h2>
+</div>
+{% endblock %}
+

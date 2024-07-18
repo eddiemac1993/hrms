@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.utils import timezone
 
 class User(AbstractUser):
     is_admin = models.BooleanField(default=False)
@@ -39,10 +40,17 @@ class Attendance(models.Model):
     date = models.DateField()
     time_in = models.TimeField()
     time_out = models.TimeField(null=True, blank=True)
-    location = models.CharField(max_length=255)
+    location_in = models.CharField(max_length=255)
+    location_out = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.employee} - {self.date}"
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Only set time_in automatically on creation
+            self.time_in = timezone.now().time()
+        super().save(*args, **kwargs)
 
 class Salary(models.Model):
     employee = models.OneToOneField(Employee, on_delete=models.CASCADE)

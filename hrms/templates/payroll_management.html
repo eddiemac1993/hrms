@@ -1,0 +1,40 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Payroll Management{% endblock %}
+
+{% block content %}
+
+        <div class="header">
+            <h2>Payroll Management</h2>
+        </div>
+        <div class="content">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Salary Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for salary in salaries %}
+                        <tr>
+                            <td>{{ salary.employee.user.get_full_name }}</td>
+                            <td>{{ salary.employee.department.name }}</td>
+                            <td>{{ salary.amount }}</td>
+                            <td>
+                                <a href="{% url 'generate_payslip' salary.employee.id %}" class="btn">Generate Payslip</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-message">No salary records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

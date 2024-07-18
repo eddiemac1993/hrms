@@ -1,12 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Employee Dashboard</title>
-</head>
-<body>
-    <h2>Employee Dashboard</h2>
-    <p>Welcome, {{ request.user.username }}</p>
-    <!-- Add more content specific to employee dashboard -->
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Employee Dashboard{% endblock %}
+
+{% block content %}
+            <div class="header">
+                <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+                <h2>Employee Dashboard</h2>
+                <p class="welcome-message">Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+            </div>
+            <div class="dashboard-content">
+                <div class="stats">
+                    <div class="stat-item">
+                        <h3>Leave Balance</h3>
+                        <p>15 days</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Upcoming Holidays</h3>
+                        <p>3</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Performance Score</h3>
+                        <p>4.5/5</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Pending Tasks</h3>
+                        <p>7</p>
+                    </div>
+                </div>
+                <!-- Add more content specific to employee dashboard -->
+            </div>
+{% endblock %}

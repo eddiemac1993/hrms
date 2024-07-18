@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}hrms{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            text-align: center;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+        }
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+        .sidebar h4 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        .sidebar h4 a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .sidebar h4 a:hover {
+            color: #3498db;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 10px 0;
+        }
+        .sidebar ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+            padding: 8px;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+.sidebar ul li a.active {
+    background-color: #34495e;
+    padding-left: 15px;
+    text-decoration: underline; /* Underline the link */
+    text-decoration-color: #3498db; /* Change underline color */
+}
+        .sidebar ul li a:hover {
+            background-color: #34495e;
+            padding-left: 15px;
+        }
+        .sidebar ul li a i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            color: #fff;
+            cursor: pointer;
+            display: none;
+        }
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .stat-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .stat-item h3 {
+            margin: 0 0 10px 0;
+            font-weight: 400;
+            color: #7f8c8d;
+        }
+        .stat-item p {
+            font-size: 1.8em;
+            margin: 0;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .content h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                transform: translateX(-100%);
+            }
+            .sidebar.expanded {
+                transform: translateX(0);
+            }
+            .close-btn {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .stats {
+                flex-direction: column;
+            }
+            .stat-item {
+                margin: 10px 0;
+            }
+            table, th, td {
+                font-size: 0.8em;
+            }
+        }
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2em;
+            }
+            table, th, td {
+                font-size: 0.7em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+
+            <div class="close-btn"><i class="fas fa-times"></i></div>
+            <img src="{% static 'coat.jfif' %}" alt="Coat Image" width="150" height="auto">
+            <h4><a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a></h4>
+<ul>
+    <li>
+        <a href="{% url 'manage_employees' %}" class="{% if request.resolver_match.url_name == 'manage_employees' %}active{% endif %}">
+            <i class="fas fa-users"></i> Employee Management
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'manage_leaves' %}" class="{% if request.resolver_match.url_name == 'manage_leaves' %}active{% endif %}">
+            <i class="fas fa-calendar-alt"></i> Leave Management
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'attendance_list' %}" class="{% if request.resolver_match.url_name == 'attendance_list' %}active{% endif %}">
+            <i class="fas fa-clipboard-check"></i> Attendance
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'payroll_management' %}" class="{% if request.resolver_match.url_name == 'payroll_management' %}active{% endif %}">
+            <i class="fas fa-money-bill-wave"></i> Payroll
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'performance_management' %}" class="{% if request.resolver_match.url_name == 'performance_management' %}active{% endif %}">
+            <i class="fas fa-chart-line"></i> Performance
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'recruitment_management' %}" class="{% if request.resolver_match.url_name == 'recruitment_management' %}active{% endif %}">
+            <i class="fas fa-user-plus"></i> Recruitment
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'training_management' %}" class="{% if request.resolver_match.url_name == 'training_management' %}active{% endif %}">
+            <i class="fas fa-chalkboard-teacher"></i> Training
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'awards_management' %}" class="{% if request.resolver_match.url_name == 'awards_management' %}active{% endif %}">
+            <i class="fas fa-trophy"></i> Awards
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'view_notices' %}" class="{% if request.resolver_match.url_name == 'view_notices' %}active{% endif %}">
+            <i class="fas fa-bullhorn"></i> Notice Board
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'settings' %}" class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+            <i class="fas fa-cog"></i> Settings
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'logout' %}" class="{% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </li>
+</ul>
+
+        </div>
+        <div class="main-content">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </div>
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const closeBtn = document.querySelector('.close-btn');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('expanded');
+            adjustMainContentPadding();
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+
+        // Close sidebar when clicking outside of it
+        document.addEventListener('click', (event) => {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnMenuToggle = menuToggle.contains(event.target);
+
+            if (!isClickInsideSidebar && !isClickOnMenuToggle && window.innerWidth <= 768) {
+                sidebar.classList.remove('expanded');
+                adjustMainContentPadding();
+            }
+        });
+
+        // Adjust main content padding when sidebar is toggled
+        function adjustMainContentPadding() {
+            if (window.innerWidth > 768) {
+                mainContent.style.marginLeft = sidebar.classList.contains('collapsed') ? '0' : '250px';
+            } else {
+                mainContent.style.marginLeft = '0';
+            }
+        }
+
+        window.addEventListener('resize', adjustMainContentPadding);
+
+        // Initial adjustment
+        adjustMainContentPadding();
+    </script>
+</body>
+</html>

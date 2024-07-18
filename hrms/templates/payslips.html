@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Payslips</h2>
+<table>
+    <tr>
+        <th>Month</th>
+        <th>Amount</th>
+        <th>Action</th>
+    </tr>
+    {% for payslip in payslips %}
+    <tr>
+        <td>{{ payslip.month|date:"F Y" }}</td>
+        <td>{{ payslip.amount }}</td>
+        <td><a href="{% url 'download_payslip' payslip.id %}">Download</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

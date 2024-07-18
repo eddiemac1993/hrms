@@ -1,69 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        h2 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        .dashboard-card {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .stat {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2980b9;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background-color: #ecf0f1;
-            margin-bottom: 5px;
-            padding: 10px;
-            border-radius: 3px;
-        }
-        li:hover {
-            background-color: #e0e6e8;
-        }
-    </style>
-</head>
-<body>
-    <h2>Admin Dashboard</h2>
+{% extends 'admin_base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+        <div class="header">
+            <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+            <h1>Welcome, Admin</h1>
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <h3>Total Employees</h3>
+                <p><i class="fas fa-users"></i> {{ total_employees }}</p>
+            </div>
+            <div class="stat-item">
+                <h3>Departments</h3>
+                <p><i class="fas fa-building"></i> {{ departments.count }}</p>
+            </div>
+            <div class="stat-item">
+                <h3>Present Employees</h3>
+                <p><i class="fas fa-user-check"></i> {{ present_employees }}</p>
+            </div>
+        </div>
+        <div class="content">
+            <h2>Employee List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.id }}</td>
+                        <td>{{ employee.user.get_full_name }}</td>
+                        <td>{{ employee.user.email }}</td>
+                        <td>{{ employee.department }}</td>
+                        <td>{{ employee.position }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No employees found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     
-    <div class="dashboard-card">
-        <p>Total Employees: <span class="stat">{{ total_employees }}</span></p>
-    </div>
-    
-    <div class="dashboard-card">
-        <p>Present Employees Today: <span class="stat">{{ present_employees }}</span></p>
-    </div>
-    
-    <div class="dashboard-card">
-        <p>Departments:</p>
-        <ul>
-            {% for department in departments %}
-                <li>{{ department }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+{% endblock %}

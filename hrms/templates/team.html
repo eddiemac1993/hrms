@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="menu-toggle"><i class="fas fa-bars"></i></div>
+<h2>My Team - {{ department.name }}</h2>
+<ul>
+{% for member in team_members %}
+    <li>{{ member.user.get_full_name }}</li>
+{% empty %}
+    <li>No other team members.</li>
+{% endfor %}
+</ul>
+{% endblock %}

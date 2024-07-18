@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Salary Information</h2>
+{% if salary %}
+    <p>Current Salary: {{ salary.amount }}</p>
+{% else %}
+    <p>Salary information not available.</p>
+{% endif %}
+{% endblock %}

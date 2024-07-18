@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Documents{% endblock %}
+
+{% block content %}
+    <div class="header">
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        <h1>Documents</h1>
+    </div>
+    <div class="content">
+        <h2>Employee Documents</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Employee Name</th>
+                    <th>Document Type</th>
+                    <th>Upload Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for document in documents %}
+                <tr>
+                    <td>{{ document.id }}</td>
+                    <td>{{ document.employee.user.get_full_name }}</td>
+                    <td>{{ document.document_type }}</td>
+                    <td>{{ document.upload_date }}</td>
+                    <td>
+                        <a href="{{ document.file.url }}" target="_blank">View</a> |
+                        <a href="{% url 'download_document' document.id %}">Download</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No documents found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

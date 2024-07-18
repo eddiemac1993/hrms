@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Employee, Attendance, Leave, PerformanceReview, Notice, Department
+from .models import User, Leave, Employee, Attendance, Leave, PerformanceReview, Notice, Department
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -8,6 +8,18 @@ class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+class UserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+
+class EmployeeForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = ['department', 'photo']
+
+    department = forms.ModelChoiceField(queryset=Department.objects.all())
 
 class EmployeeProfileForm(forms.ModelForm):
     department = forms.ModelChoiceField(queryset=Department.objects.all(), required=False)
@@ -40,3 +52,25 @@ class NoticeForm(forms.ModelForm):
     class Meta:
         model = Notice
         fields = ['title', 'content']
+
+class LeaveRequestForm(forms.ModelForm):
+    class Meta:
+        model = Leave
+        fields = ['start_date', 'end_date', 'reason', 'document']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'reason': forms.Textarea(attrs={'rows': 4}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+
+        if start_date and end_date:
+            if start_date > end_date:
+                raise forms.ValidationError("End date should be after the start date.")
+
+        return cleaned_data
+

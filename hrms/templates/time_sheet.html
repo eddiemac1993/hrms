@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Time Sheets{% endblock %}
+
+{% block content %}
+    <div class="header">
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        <h1>Time Sheets</h1>
+    </div>
+    <div class="content">
+        <h2>Employee Time Sheets</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Hours Worked</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for time_sheet in time_sheets %}
+                <tr>
+                    <td>{{ time_sheet.id }}</td>
+                    <td>{{ time_sheet.employee.user.get_full_name }}</td>
+                    <td>{{ time_sheet.employee.department }}</td>
+                    <td>{{ time_sheet.date }}</td>
+                    <td>{{ time_sheet.check_in }}</td>
+                    <td>{{ time_sheet.check_out }}</td>
+                    <td>{{ time_sheet.hours_worked }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">No time sheets found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

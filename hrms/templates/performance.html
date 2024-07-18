@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="menu-toggle"><i class="fas fa-bars"></i></div>
+<h2>My Performance Reviews</h2>
+{% for review in reviews %}
+    <div class="review">
+        <h3>Review Date: {{ review.review_date }}</h3>
+        <p>Rating: {{ review.rating }}/10</p>
+        <p>Comments: {{ review.comments }}</p>
+    </div>
+{% empty %}
+    <p>No performance reviews available.</p>
+{% endfor %}
+{% endblock %}
