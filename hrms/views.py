@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.http import HttpResponse
-from .forms import UserRegistrationForm, UserForm, LeaveRequestForm, EmployeeProfileForm, AttendanceForm, LeaveForm, EmployeeForm, PerformanceReviewForm, NoticeForm
+from .forms import UserRegistrationForm, DepartmentForm, UserForm, LeaveRequestForm, EmployeeProfileForm, AttendanceForm, LeaveForm, EmployeeForm, PerformanceReviewForm, NoticeForm
 from .models import User, Payslip, Salary, Employee, Attendance, Leave, PerformanceReview, Notice, Department
 
 def register(request):
@@ -376,3 +376,46 @@ def employee_team(request):
         'team_members': team_members,
     }
     return render(request, 'team.html', context)
+
+def is_admin(user):
+    return user.is_authenticated and user.is_admin
+
+@login_required
+@user_passes_test(is_admin)
+def add_department(request):
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('department_list')  # You'll need to create this view
+    else:
+        form = DepartmentForm()
+    return render(request, 'add_department.html', {'form': form})
+
+@login_required
+@user_passes_test(is_admin)
+def edit_department(request, department_id):
+    department = get_object_or_404(Department, id=department_id)
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            form.save()
+            return redirect('department_list')
+    else:
+        form = DepartmentForm(instance=department)
+    return render(request, 'edit_department.html', {'form': form})
+
+@login_required
+@user_passes_test(is_admin)
+def delete_department(request, department_id):
+    department = get_object_or_404(Department, id=department_id)
+    if request.method == 'POST':
+        department.delete()
+        return redirect('department_list')
+    return render(request, 'confirm_delete.html', {'object': department})
+
+@login_required
+@user_passes_test(is_admin)
+def department_list(request):
+    departments = Department.objects.all()
+    return render(request, 'department_list.html', {'departments': departments})

@@ -4,10 +4,12 @@ from .models import User, Leave, Employee, Attendance, Leave, PerformanceReview,
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
 
 class UserForm(UserCreationForm):
     class Meta:
@@ -73,4 +75,10 @@ class LeaveRequestForm(forms.ModelForm):
                 raise forms.ValidationError("End date should be after the start date.")
 
         return cleaned_data
+
+class DepartmentForm(forms.ModelForm):
+    class Meta:
+        model = Department
+        fields = ['name']
+
 

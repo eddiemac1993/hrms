@@ -1,105 +1,12 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Admin Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f7fa;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            text-align: center; /* Centering content */
-        }
-        .login-container h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        .login-container img {
-            width: 150px; /* Adjust size as needed */
-            margin-bottom: 20px;
-        }
-        form p {
-            margin-bottom: 20px;
-        }
-        form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #34495e;
-        }
-        form input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        form input:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-        button[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button[type="submit"]:hover {
-            background-color: #2980b9;
-        }
-        .forgot-password {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .forgot-password a {
-            color: #7f8c8d;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-        .forgot-password a:hover {
-            color: #3498db;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <img src="{% static 'coat.jfif' %}" alt="Coat Image">
-        <h2><i class="fas fa-lock"></i> Login</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Login</button>
-        </form>
-        <div class="forgot-password">
-             <p>Don't have an account? <a href="{% url 'register' %}">Sign Up</a></p>
-        </div>
-    </div>
-</body>
-</html>
+{% extends "auth_base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+<a href="{% url 'register' %}" class="link-button">Create New Account</a>
+{% endblock %}
