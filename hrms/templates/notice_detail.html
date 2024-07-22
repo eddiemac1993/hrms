@@ -1,0 +1,17 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Notice Details{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="header">
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        <h1>{{ notice.title }}</h1>
+    </div>
+    <div class="content">
+        <p><strong>Published on:</strong> {{ notice.published_date }}</p>
+        <p>{{ notice.content }}</p>
+        <a href="{% url 'view_notices' %}" class="btn btn-secondary">Back to Notices</a>
+    </div>
+</div>
+{% endblock %}

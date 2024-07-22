@@ -6,6 +6,9 @@ from django.utils import timezone
 from django.http import HttpResponse
 from .forms import UserRegistrationForm, DepartmentForm, UserForm, LeaveRequestForm, EmployeeProfileForm, AttendanceForm, LeaveForm, EmployeeForm, PerformanceReviewForm, NoticeForm
 from .models import User, Payslip, Salary, Employee, Attendance, Leave, PerformanceReview, Notice, Department
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.contrib import messages
 
 def register(request):
     if request.method == 'POST':
@@ -29,14 +32,30 @@ def dashboard(request):
         total_employees = Employee.objects.count()
         departments = Department.objects.all()
         today = timezone.now().date()
-        present_employees = Attendance.objects.filter(date=today, time_out__isnull=True).count()
+        present_attendances = Attendance.objects.filter(date=today, time_out__isnull=True)
+        present_employees = present_attendances.count()
+        absent_employees = total_employees - present_employees
+        present_employees_list = [attendance.employee for attendance in present_attendances]
+
+        # Fetch the first notice
+        first_notice = Notice.objects.order_by('date_posted').first()
+
         return render(request, 'admin_dashboard.html', {
             'total_employees': total_employees,
             'departments': departments,
             'present_employees': present_employees,
+            'absent_employees': absent_employees,
+            'present_employees_list': present_employees_list,
+            'first_notice': first_notice,  # Pass the first notice to the template
         })
     else:
-        return render(request, 'employee_dashboard.html')
+        # Fetch the first notice
+        first_notice = Notice.objects.order_by('date_posted').first()
+
+        return render(request, 'employee_dashboard.html', {
+            'first_notice': first_notice,  # Pass the first notice to the template
+        })
+
 
 @login_required
 @user_passes_test(lambda u: u.is_admin)
@@ -100,10 +119,15 @@ def mark_attendance(request):
 @login_required
 def attendance_list(request):
     if request.user.is_admin:
-        attendances = Attendance.objects.all()
+        attendances = Attendance.objects.select_related('employee__user').all()
     else:
-        attendances = Attendance.objects.filter(employee=request.user.employee)
+        attendances = Attendance.objects.select_related('employee__user').filter(employee=request.user.employee)
+
     return render(request, 'attendance_list.html', {'attendances': attendances})
+
+def employee_detail(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    return render(request, 'employee_detail.html', {'employee': employee})
 
 def add_attendance(request):
     if request.method == 'POST':
@@ -116,6 +140,11 @@ def add_attendance(request):
         form = AttendanceForm()
 
     return render(request, 'add_attendance.html', {'form': form})
+
+def delete_attendance(request, pk):
+    attendance = get_object_or_404(Attendance, pk=pk)
+    attendance.delete()
+    return redirect('attendance_list')
 
 @login_required
 def apply_leave(request):
@@ -159,6 +188,7 @@ def submit_performance_review(request, employee_id):
         form = PerformanceReviewForm()
     return render(request, 'submit_performance_review.html', {'form': form, 'employee': employee})
 
+
 @login_required
 def view_notices(request):
     notices = Notice.objects.all().order_by('-date_posted')
@@ -171,10 +201,40 @@ def post_notice(request):
         form = NoticeForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Notice posted successfully.')
             return redirect('view_notices')
     else:
         form = NoticeForm()
     return render(request, 'post_notice.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_admin)
+def edit_notice(request, notice_id):
+    notice = get_object_or_404(Notice, id=notice_id)
+    if request.method == 'POST':
+        form = NoticeForm(request.POST, instance=notice)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Notice updated successfully.')
+            return redirect('view_notices')
+    else:
+        form = NoticeForm(instance=notice)
+    return render(request, 'edit_notice.html', {'form': form, 'notice': notice})
+
+@login_required
+@user_passes_test(lambda u: u.is_admin)
+def delete_notice(request, notice_id):
+    notice = get_object_or_404(Notice, id=notice_id)
+    if request.method == 'POST':
+        notice.delete()
+        messages.success(request, 'Notice deleted successfully.')
+        return redirect('view_notices')
+    return render(request, 'delete_notice.html', {'notice': notice})
+
+@login_required
+def notice_detail(request, notice_id):
+    notice = get_object_or_404(Notice, id=notice_id)
+    return render(request, 'notice_detail.html', {'notice': notice})
 
 def recruitment_management(request):
     # Add your logic here
@@ -419,3 +479,12 @@ def delete_department(request, department_id):
 def department_list(request):
     departments = Department.objects.all()
     return render(request, 'department_list.html', {'departments': departments})
+
+def about(request):
+    return render(request, 'about.html')
+
+def help(request):
+    return render(request, 'help.html')
+
+def more(request):
+    return render(request, 'more.html')

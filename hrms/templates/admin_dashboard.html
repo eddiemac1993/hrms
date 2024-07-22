@@ -3,53 +3,77 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
+<div class="header">
+    <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+    <h1>Welcome, Admin</h1>
+</div>
 
-        <div class="header">
-            <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-            <h1>Welcome, Admin</h1>
-        </div>
-        <div class="stats">
-            <div class="stat-item">
-                <h3>Total Employees</h3>
-                <p><i class="fas fa-users"></i> {{ total_employees }}</p>
-            </div>
-            <div class="stat-item">
-                <h3>Departments</h3>
-                <p><i class="fas fa-building"></i> {{ departments.count }}</p>
-            </div>
-            <div class="stat-item">
-                <h3>Present Employees</h3>
-                <p><i class="fas fa-user-check"></i> {{ present_employees }}</p>
-            </div>
-        </div>
-        <div class="content">
-            <h2>Employee List</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Department</th>
-                        <th>Position</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for employee in employees %}
-                    <tr>
-                        <td>{{ employee.id }}</td>
-                        <td>{{ employee.user.get_full_name }}</td>
-                        <td>{{ employee.user.email }}</td>
-                        <td>{{ employee.department }}</td>
-                        <td>{{ employee.position }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5">No employees found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<div class="stats">
+    <div class="stat-item">
+        <h3>Total Employees</h3>
+        <p><i class="fas fa-users"></i> {{ total_employees }}</p>
+    </div>
+    <div class="stat-item">
+        <h3>Departments</h3>
+        <p><i class="fas fa-building"></i> {{ departments.count }}</p>
+    </div>
+    <div class="stat-item">
+        <h3>Present Employees</h3>
+        <p><i class="fas fa-user-check"></i> {{ present_employees }}</p>
+    </div>
+    <div class="stat-item">
+        <h3>Absent Employees</h3>
+        <p><i class="fas fa-user-times"></i> {{ absent_employees }}</p>
+    </div>
+</div>
+<h2>Present Employees</h2>
+<div class="content">
     
+    {% if present_employees_list %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in present_employees_list %}
+            <tr>
+                <td>{{ employee.id }}</td>
+                <td>
+                    <a href="{% url 'employee_detail' employee.id %}" class="btn-view-details">
+                        {{ employee.user.username }}
+                    </a>
+                </td>
+                <td>{{ employee.user.email }}</td>
+                <td>{{ employee.department }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No present employees found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No employees are currently present.</p>
+    {% endif %}
+</div>
+    <h2>First Notice</h2>
+<div class="content">
+
+    {% if first_notice %}
+    <div class="notice">
+        <h3>{{ first_notice.title }}</h3>
+        <p>{{ first_notice.content }}</p>
+        <a href="{% url 'notice_detail' first_notice.id %}">Read more</a>
+    </div>
+    {% else %}
+    <p>No notices available.</p>
+    {% endif %}
+</div>
+
 {% endblock %}

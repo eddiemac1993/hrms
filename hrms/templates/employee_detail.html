@@ -1,0 +1,82 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Employee Details{% endblock %}
+
+{% block content %}
+<style>
+    .main-content {
+        flex: 1;
+        padding: 30px;
+        box-sizing: border-box;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-left: 250px;
+        transition: margin-left 0.3s ease;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .header h1 {
+        margin: 0;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    .form-container {
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+    }
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .btn {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn:hover {
+        background-color: #2980b9;
+    }
+</style>
+
+<div class="main-content">
+    <div class="header">
+        <h1>Employee Details</h1>
+    </div>
+    <div class="form-container">
+        <p><strong>Full Name:</strong> {{ employee.full_name }}</p>
+        <p><strong>Username:</strong> {{ employee.user.username }}</p>
+        <p><strong>Email:</strong> {{ employee.user.email }}</p>
+        <p><strong>Department:</strong> {{ employee.department }}</p>
+        <p><strong>Photo:</strong></p>
+        {% if employee.photo %}
+            <img src="{{ employee.photo.url }}" alt="{{ employee.full_name }}" width="200">
+        {% else %}
+            No Photo
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

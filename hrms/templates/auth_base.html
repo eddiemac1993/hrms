@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Ministry of Health{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'Coat.png' %}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -123,10 +124,11 @@
         <img src="{% static 'Coat.png' %}" alt="Logo" class="logo">
         {% block content %}
         {% endblock %}
+        <img src="{% static 'Screenshot_22-7-2024_143834_.jpeg' %}" alt="Logo" class="logo">
         <div class="links">
-            <a href="#">About</a>
-            <a href="#">Help</a>
-            <a href="#">More</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'help' %}">Help</a>
+            <a href="{% url 'more' %}">More</a>
         </div>
     </div>
 </body>

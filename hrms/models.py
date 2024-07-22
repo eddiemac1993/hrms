@@ -21,6 +21,12 @@ class User(AbstractUser):
         verbose_name=('user permissions'),
     )
 
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
+
+    def __str__(self):
+        return self.get_full_name()
+
 class Department(models.Model):
     name = models.CharField(max_length=100)
 
@@ -35,12 +41,15 @@ class Employee(models.Model):
     def __str__(self):
         return self.user.get_full_name()
 
+    def full_name(self):
+        return self.user.get_full_name()
+
 class Attendance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField()
-    time_in = models.TimeField()
+    time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
-    location_in = models.CharField(max_length=255)
+    location_in = models.CharField(max_length=255, null=True, blank=True)
     location_out = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
@@ -48,8 +57,13 @@ class Attendance(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            # Only set time_in automatically on creation
+            # Only set time_in and location_in automatically on creation
             self.time_in = timezone.now().time()
+            self.location_in = self.location_in if self.location_in else "Default Location In"
+        else:
+            # Set time_out and location_out on update
+            self.time_out = timezone.now().time()
+            self.location_out = self.location_out if self.location_out else "Default Location Out"
         super().save(*args, **kwargs)
 
 class Salary(models.Model):

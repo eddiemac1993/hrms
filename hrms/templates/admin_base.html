@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}hrms{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'Coat.png' %}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -66,10 +67,69 @@
             transition: all 0.3s;
             border-radius: 5px;
         }
+    .notice-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .notice-item {
+        background-color: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .notice-title {
+        color: #2c3e50;
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: 500;
+    }
+    .notice-date {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+    .notice-actions {
+        margin-top: 10px;
+    }
+    .notice-actions a {
+        color: #3498db;
+        text-decoration: none;
+        margin-right: 10px;
+    }
+    .notice-actions a:hover {
+        color: #2980b9;
+    }
+    .post-notice-btn {
+        display: inline-block;
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .post-notice-btn:hover {
+        background-color: #2980b9;
+    }
+    .btn-view-details {
+        display: inline-block;
+        padding: 10px 20px;
+        color: #fff;
+        background-color: #3498db;
+        text-decoration: none;
+        border-radius: 40px;
+        text-align: center;
+    }
+    .btn-view-details:hover {
+        background-color: #2980b9;
+    }
+    .btn-view-details:active {
+        background-color: #1c598a;
+    }
 .sidebar ul li a.active {
     background-color: #34495e;
     padding-left: 15px;
-    text-decoration: underline; /* Underline the link */
     text-decoration-color: #3498db; /* Change underline color */
 }
         .sidebar ul li a:hover {
@@ -248,14 +308,16 @@
             <img src="{% static 'Coat.png' %}" alt="Coat Image" width="90" height="90">
 
 <ul>
-     <li>
-        <h4><a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a></h4>
+    <li>
+        <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+        </a>
     </li>
     <li>
-    <a href="{% url 'department_list' %}" class="{% if request.resolver_match.url_name == 'department_list' or request.resolver_match.url_name == 'add_department' %}active{% endif %}">
-        <i class="fas fa-building"></i> Manage Departments
-    </a>
-</li>
+        <a href="{% url 'department_list' %}" class="{% if request.resolver_match.url_name == 'department_list' or request.resolver_match.url_name == 'add_department' %}active{% endif %}">
+            <i class="fas fa-building"></i> Manage Departments
+        </a>
+    </li>
     <li>
         <a href="{% url 'manage_employees' %}" class="{% if request.resolver_match.url_name == 'manage_employees' %}active{% endif %}">
             <i class="fas fa-users"></i> Employee Management
@@ -312,6 +374,7 @@
         </a>
     </li>
 </ul>
+
         </div>
         <div class="main-content">
         {% block content %}

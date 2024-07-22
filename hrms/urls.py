@@ -5,6 +5,9 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('about/', views.about, name='about'),
+    path('help/', views.help, name='help'),
+    path('more/', views.more, name='more'),
     path('register/', views.register, name='register'),
     path('', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', views.custom_logout, name='logout'),
@@ -23,8 +26,11 @@ urlpatterns = [
     path('recruitment/', views.recruitment_management, name='recruitment_management'),
     path('performance/', views.performance_management, name='performance_management'),
     path('performance/review/<int:employee_id>/', views.submit_performance_review, name='submit_performance_review'),
-    path('notices/view/', views.view_notices, name='view_notices'),
-    path('notices/post/', views.post_notice, name='post_notice'),
+    path('notices/', views.view_notices, name='view_notices'),
+    path('notice/post/', views.post_notice, name='post_notice'),
+    path('notice/<int:notice_id>/edit/', views.edit_notice, name='edit_notice'),
+    path('notice/<int:notice_id>/delete/', views.delete_notice, name='delete_notice'),
+    path('notice/<int:notice_id>/', views.notice_detail, name='notice_detail'),
     path('employees/add/', views.add_employee, name='add_employee'),
     path('employees/edit/<int:id>/', views.edit_employee, name='edit_employee'),
     path('employees/delete/<int:id>/', views.delete_employee, name='delete_employee'),
@@ -47,5 +53,6 @@ urlpatterns = [
     path('departments/', views.department_list, name='department_list'),
     path('departments/edit/<int:department_id>/', views.edit_department, name='edit_department'),
     path('departments/delete/<int:department_id>/', views.delete_department, name='delete_department'),  # Add this line
-    # Add any other URLs here
+    path('delete_attendance/<int:pk>/', views.delete_attendance, name='delete_attendance'),
+    path('employee/<int:pk>/', views.employee_detail, name='employee_detail'),
 ]

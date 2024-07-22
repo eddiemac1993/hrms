@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Ministry of Health</title>
+    <link rel="icon" type="image/png" href="{% static 'Coat.png' %}">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .back-link {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        .logo {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 90px;
+            height: 90px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .content {
+            font-size: 16px;
+            color: #2c3e50;
+            text-align: left;
+        }
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .links a {
+            color: #737373;
+            font-size: 14px;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i></a>
+        <h1 class="title">About Us</h1>
+        <img src="{% static 'Screenshot_22-7-2024_143834_.jpeg' %}" alt="Logo" class="logo">
+        <div class="content">
+            <p>CLINAK provides one-stop automated solutions for trade and industry. Depending on the size and field of your organization, we have different products and services to meet your requirements. We provide the optimum and customized solutions made for your organization.</p>
+            <p>CLINAK began its business operations as a hardware and network solutions providing company in June 2022.</p>
+            <p>Our mission is to achieve the reputation of a quality, high standard, and reliable solution & service provider company in the ICT industry. Our vision is to achieve 100% customer satisfaction by delivering quality products and services at an affordable cost.</p>
+            <p>We focus exclusively on high-quality and cost-effective software development and the implementation of services. Our team is advancing at a tremendous pace with the involvement of skilled and experienced people.</p>
+            <p>Currently, we are serving in the Government, Banking, NGOs, Large Corporate, Telecom, and Media sectors.</p>
+        </div>
+        <div class="links">
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'help' %}">Help</a>
+            <a href="{% url 'more' %}">More</a>
+        </div>
+    </div>
+</body>
+</html>

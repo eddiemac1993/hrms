@@ -109,7 +109,6 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Full Name</th>
                             <th>Email</th>
                             <th>Department</th>
@@ -121,8 +120,7 @@
                     <tbody>
                         {% for employee in employees %}
                         <tr>
-                            <td>{{ employee.id }}</td>
-                            <td>{{ employee.user.username }}</td>
+                            <td>{{ employee.full_name }}</td>
                             <td>{{ employee.user.email }}</td>
                             <td>{{ employee.department }}</td>
                             <td>{{ employee.position }}</td>
