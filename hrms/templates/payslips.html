@@ -1,19 +1,127 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>My Payslips</h2>
-<table>
-    <tr>
-        <th>Month</th>
-        <th>Amount</th>
-        <th>Action</th>
-    </tr>
-    {% for payslip in payslips %}
-    <tr>
-        <td>{{ payslip.month|date:"F Y" }}</td>
-        <td>{{ payslip.amount }}</td>
-        <td><a href="{% url 'download_payslip' payslip.id %}">Download</a></td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="payslips-container">
+    <div class="header">
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        <p class="welcome-message">Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+    </div>
+    <div class="payslips-content">
+        <h2>My Payslips</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payslip in payslips %}
+                <tr>
+                    <td>{{ payslip.month|date:"F Y" }}</td>
+                    <td>{{ payslip.amount }}</td>
+                    <td><a href="{% url 'download_payslip' payslip.id %}" class="download-btn">Download</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #2c3e50;
+        color: white;
+    }
+
+    .welcome-message {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    .menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .menu-toggle:hover {
+        background-color: #34495e;
+    }
+
+    .menu-toggle i {
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    .payslips-container {
+        padding: 20px;
+    }
+
+    .payslips-content {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .payslips-content h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #2c3e50;
+        color: white;
+        font-size: 1em;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .download-btn {
+        color: #2c3e50;
+        text-decoration: none;
+        background-color: #ecf0f1;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 0.9em;
+        border: 1px solid #2c3e50;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .download-btn:hover {
+        background-color: #2c3e50;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .menu-toggle {
+            display: flex;
+        }
+    }
+</style>
 {% endblock %}

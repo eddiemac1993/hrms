@@ -1,13 +1,96 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="menu-toggle"><i class="fas fa-bars"></i></div>
-<h2>My Team - {{ department.name }}</h2>
-<ul>
-{% for member in team_members %}
-    <li>{{ member.user.get_full_name }}</li>
-{% empty %}
-    <li>No other team members.</li>
-{% endfor %}
-</ul>
+<div class="team-container">
+    <div class="header">
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        <p class="welcome-message">Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+    </div>
+    <div class="team-content">
+        <h2>My Team - {{ department.name }}</h2>
+        <ul class="team-list">
+            {% for member in team_members %}
+                <li>{{ member.user.get_full_name }}</li>
+            {% empty %}
+                <li>No other team members.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<style>
+    .team-container {
+        padding: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #2c3e50;
+        color: white;
+    }
+
+    .welcome-message {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    .menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .menu-toggle:hover {
+        background-color: #34495e;
+    }
+
+    .menu-toggle i {
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    .team-content {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-content h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    .team-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .team-list li {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+
+    .team-list li:nth-child(even) {
+        background-color: #e9ecef;
+    }
+
+    @media (max-width: 768px) {
+        .menu-toggle {
+            display: flex;
+        }
+    }
+</style>
 {% endblock %}

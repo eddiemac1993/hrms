@@ -11,25 +11,127 @@
             <a href="{% url 'post_notice' %}" class="post-notice-btn">Post New Notice</a>
         {% endif %}
         <ul class="notice-list">
-        {% for notice in notices %}
-                        <li>
-                    <a href="{% url 'notice_detail' notice.id %}">{{ notice.title }}</a>
+            {% for notice in notices %}
+                <li class="notice-item">
+                    <h2><a href="{% url 'notice_detail' notice.id %}" class="notice-title">{{ notice.title }}</a></h2>
+                    <p class="notice-date">Posted on: {{ notice.date_posted }}</p>
+                    <p class="notice-content">{{ notice.content }}</p>
+                    {% if user.is_admin %}
+                        <div class="notice-actions">
+                            <a href="{% url 'edit_notice' notice.id %}" class="edit-btn">Edit</a>
+                            <a href="{% url 'delete_notice' notice.id %}" class="delete-btn">Delete</a>
+                        </div>
+                    {% endif %}
                 </li>
-            <li class="notice-item">
-                <h2><a href="{% url 'notice_detail' notice.id %}" class="notice-title">{{ notice.title }}</a></h2>
-                <p class="notice-date">Posted on: {{ notice.date_posted }}</p>
-                <p class="notice-content">{{ notice.content }}</p>
-                {% if user.is_admin %}
-                    <div class="notice-actions">
-                        <a href="{% url 'edit_notice' notice.id %}">Edit</a>
-                        <a href="{% url 'delete_notice' notice.id %}">Delete</a>
-                    </div>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li>No notices available.</li>
-        {% endfor %}
+            {% empty %}
+                <li>No notices available.</li>
+            {% endfor %}
         </ul>
     </div>
 </div>
 {% endblock %}
+
+<style>
+    .main-content {
+        padding: 30px;
+        box-sizing: border-box;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-left: 250px;
+        transition: margin-left 0.3s ease;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .menu-toggle {
+        display: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #2c3e50;
+    }
+
+    .post-notice-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #3498db;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-bottom: 20px;
+    }
+
+    .post-notice-btn:hover {
+        background-color: #2980b9;
+    }
+
+    .notice-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .notice-item {
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .notice-title {
+        font-size: 1.5em;
+        color: #2c3e50;
+        text-decoration: none;
+    }
+
+    .notice-title:hover {
+        text-decoration: underline;
+    }
+
+    .notice-date {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .notice-content {
+        font-size: 16px;
+        color: #2c3e50;
+    }
+
+    .notice-actions {
+        margin-top: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+        color: #3498db;
+        margin-right: 10px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .edit-btn:hover, .delete-btn:hover {
+        color: #2980b9;
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            margin-left: 0;
+            padding: 20px;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+    }
+</style>

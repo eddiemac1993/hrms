@@ -1,20 +1,120 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>My Attendance</h2>
-{% if not attendance %}
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Clock In</button>
-    </form>
-{% elif not attendance.time_out %}
-    <p>Clocked in at: {{ attendance.time_in }}</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Clock Out</button>
-    </form>
-{% else %}
-    <p>Clocked in at: {{ attendance.time_in }}</p>
-    <p>Clocked out at: {{ attendance.time_out }}</p>
-{% endif %}
+<div class="attendance-container">
+    <div class="header">
+        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+        <p class="welcome-message">Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
+    </div>
+    <div class="attendance-content">
+        <h2>My Attendance</h2>
+        {% if not attendance %}
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="attendance-btn clock-in">Clock In</button>
+            </form>
+        {% elif not attendance.time_out %}
+            <p>Clocked in at: {{ attendance.time_in }}</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="attendance-btn clock-out">Clock Out</button>
+            </form>
+        {% else %}
+            <p>Clocked in at: {{ attendance.time_in }}</p>
+            <p>Clocked out at: {{ attendance.time_out }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #2c3e50;
+        color: white;
+    }
+
+    .welcome-message {
+        margin: 0;
+        font-size: 1.2em;
+    }
+
+    .menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .menu-toggle:hover {
+        background-color: #34495e;
+    }
+
+    .menu-toggle i {
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    .attendance-container {
+        padding: 20px;
+    }
+
+    .attendance-content {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .attendance-content h2 {
+        color: #2c3e50;
+    }
+
+    .attendance-content p {
+        color: #2c3e50;
+        font-size: 16px;
+    }
+
+    .attendance-btn {
+        align-self: flex-start;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease;
+    }
+
+    .attendance-btn.clock-in {
+        background-color: #27ae60;
+    }
+
+    .attendance-btn.clock-in:hover {
+        background-color: #2ecc71;
+    }
+
+    .attendance-btn.clock-out {
+        background-color: #e74c3c;
+    }
+
+    .attendance-btn.clock-out:hover {
+        background-color: #c0392b;
+    }
+
+    @media (max-width: 768px) {
+        .menu-toggle {
+            display: flex;
+        }
+    }
+</style>
 {% endblock %}
