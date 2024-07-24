@@ -5,9 +5,9 @@
 {% block content %}
 <div class="header">
     <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-    <h1>Welcome, Admin</h1>
+    <h1>Welcome, {{ request.user.get_full_name|default:request.user.username }}</h1>
 </div>
-
+<h2>Duty Station: {{ request.user.duty_station.name }}</h2>
 <div class="stats">
     <div class="stat-item">
         <h3>Total Employees</h3>

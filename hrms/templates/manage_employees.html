@@ -113,7 +113,7 @@
                             <th>Email</th>
                             <th>Department</th>
                             <th>Position</th>
-                            <th>Date Hired</th>
+                            <th>Date Joined</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -124,7 +124,7 @@
                             <td>{{ employee.user.email }}</td>
                             <td>{{ employee.department }}</td>
                             <td>{{ employee.position }}</td>
-                            <td>{{ employee.date_hired }}</td>
+                            <td>{{ employee.date_joined }}</td>
                             <td>
                                 <a href="{% url 'edit_employee' employee.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
                                 <a href="{% url 'delete_employee' employee.id %}" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</a>

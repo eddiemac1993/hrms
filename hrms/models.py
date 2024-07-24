@@ -1,10 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils import timezone
+import datetime
+
+class DutyStation(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class Position(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class User(AbstractUser):
     is_admin = models.BooleanField(default=False)
     is_employee = models.BooleanField(default=False)
+    duty_station = models.ForeignKey(DutyStation, on_delete=models.SET_NULL, null=True)
     groups = models.ManyToManyField(
         Group,
         related_name='hrms_user_set',  # Custom related name
@@ -29,14 +43,18 @@ class User(AbstractUser):
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
+    duty_station = models.ForeignKey(DutyStation, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    duty_station = models.ForeignKey(DutyStation, on_delete=models.CASCADE, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True)
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True)
     photo = models.ImageField(upload_to='employee_photos/', null=True, blank=True)
+    date_joined = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.user.get_full_name()
@@ -109,6 +127,7 @@ class Notice(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
+    duty_station = models.ForeignKey(DutyStation, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title

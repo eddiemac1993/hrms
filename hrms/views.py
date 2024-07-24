@@ -15,10 +15,17 @@ def register(request):
         user_form = UserRegistrationForm(request.POST)
         profile_form = EmployeeProfileForm(request.POST, request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
+            user = user_form.save(commit=False)
+            user.is_admin = user_form.cleaned_data.get('is_admin')
+            user.is_employee = not user.is_admin
+            user.duty_station = user_form.cleaned_data.get('duty_station')
+            user.save()
+
             profile = profile_form.save(commit=False)
             profile.user = user
+            profile.duty_station = user.duty_station
             profile.save()
+
             login(request, user)
             return redirect('login')
     else:
@@ -28,17 +35,21 @@ def register(request):
 
 @login_required
 def dashboard(request):
+    user_duty_station = request.user.duty_station
     if request.user.is_admin:
-        total_employees = Employee.objects.count()
-        departments = Department.objects.all()
+        total_employees = Employee.objects.filter(duty_station=user_duty_station).count()
+        departments = Department.objects.filter(duty_station=user_duty_station)
         today = timezone.now().date()
-        present_attendances = Attendance.objects.filter(date=today, time_out__isnull=True)
+        present_attendances = Attendance.objects.filter(
+            employee__duty_station=user_duty_station,
+            date=today,
+            time_out__isnull=True
+        )
         present_employees = present_attendances.count()
         absent_employees = total_employees - present_employees
         present_employees_list = [attendance.employee for attendance in present_attendances]
 
-        # Fetch the first notice
-        first_notice = Notice.objects.order_by('date_posted').first()
+        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('date_posted').first()
 
         return render(request, 'admin_dashboard.html', {
             'total_employees': total_employees,
@@ -46,16 +57,13 @@ def dashboard(request):
             'present_employees': present_employees,
             'absent_employees': absent_employees,
             'present_employees_list': present_employees_list,
-            'first_notice': first_notice,  # Pass the first notice to the template
+            'first_notice': first_notice,
         })
     else:
-        # Fetch the first notice
-        first_notice = Notice.objects.order_by('date_posted').first()
-
+        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('date_posted').first()
         return render(request, 'employee_dashboard.html', {
-            'first_notice': first_notice,  # Pass the first notice to the template
+            'first_notice': first_notice,
         })
-
 
 @login_required
 @user_passes_test(lambda u: u.is_admin)
@@ -67,23 +75,26 @@ def manage_employees(request):
 def add_employee(request):
     if request.method == 'POST':
         user_form = UserForm(request.POST)
-        employee_form = EmployeeForm(request.POST, request.FILES)
+        employee_form = EmployeeForm(request.POST, request.FILES, duty_station=request.user.duty_station)
         if user_form.is_valid() and employee_form.is_valid():
             user = user_form.save(commit=False)
             user.is_employee = True
+            user.duty_station = request.user.duty_station
             user.save()
             employee = employee_form.save(commit=False)
             employee.user = user
+            employee.duty_station = user.duty_station
             employee.save()
             return redirect('manage_employees')
     else:
         user_form = UserForm()
-        employee_form = EmployeeForm()
+        employee_form = EmployeeForm(duty_station=request.user.duty_station)
 
     return render(request, 'add_employee.html', {
         'user_form': user_form,
         'employee_form': employee_form
     })
+
 
 def edit_employee(request, id):
     employee = get_object_or_404(Employee, id=id)

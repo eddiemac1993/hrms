@@ -1,7 +1,5 @@
 {% extends "auth_base.html" %}
-
 {% block title %}Register{% endblock %}
-
 {% block content %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -31,6 +29,16 @@
     <div class="form-group">
         <label for="{{ user_form.password2.id_for_label }}">Confirm Password:</label>
         {{ user_form.password2 }}
+    </div>
+        <h2>Employee Information</h2>
+    <div class="form-group">
+        <label for="{{ user_form.district.id_for_label }}">District:</label>
+        {{ user_form.district }}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ profile_form.department.id_for_label }}">Department:</label>
+        {{ profile_form.department }}
     </div>
     <button type="submit">Register</button>
 </form>

@@ -1,27 +1,39 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Leave, Employee, Attendance, Leave, PerformanceReview, Notice, Department
+from .models import User, Employee, Department, DutyStation
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
+    is_admin = forms.BooleanField(required=False, help_text='Check if this user is an admin')
+    duty_station = forms.ModelChoiceField(queryset=DutyStation.objects.all(), required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'is_admin', 'duty_station']
 
 class UserForm(UserCreationForm):
+    is_admin = forms.BooleanField(required=False, help_text='Check if this user is an admin')
+    duty_station = forms.ModelChoiceField(queryset=DutyStation.objects.all(), required=True)
+
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'is_admin', 'duty_station']
 
 class EmployeeForm(forms.ModelForm):
+    department = forms.ModelChoiceField(queryset=Department.objects.all())
+
     class Meta:
         model = Employee
         fields = ['department', 'photo']
 
-    department = forms.ModelChoiceField(queryset=Department.objects.all())
+    def __init__(self, *args, **kwargs):
+        duty_station = kwargs.pop('duty_station', None)
+        super(EmployeeForm, self).__init__(*args, **kwargs)
+        if duty_station:
+            self.fields['department'].queryset = Department.objects.filter(duty_station=duty_station)
 
 class EmployeeProfileForm(forms.ModelForm):
     department = forms.ModelChoiceField(queryset=Department.objects.all(), required=False)
@@ -30,6 +42,13 @@ class EmployeeProfileForm(forms.ModelForm):
     class Meta:
         model = Employee
         fields = ['department', 'photo']
+
+    def __init__(self, *args, **kwargs):
+        duty_station = kwargs.pop('duty_station', None)
+        super(EmployeeProfileForm, self).__init__(*args, **kwargs)
+        if duty_station:
+            self.fields['department'].queryset = Department.objects.filter(duty_station=duty_station)
+
 
 class AttendanceForm(forms.ModelForm):
     time_in = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
