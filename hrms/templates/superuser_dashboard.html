@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Superuser Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .admin-header {
+            background-color: #222;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .admin-sidebar {
+            background-color: #333;
+            color: #fff;
+            width: 200px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+        }
+        .admin-sidebar h2 {
+            margin: 0;
+            padding: 0;
+            font-size: 18px;
+        }
+        .admin-sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .admin-sidebar li {
+            margin: 10px 0;
+        }
+        .admin-sidebar a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .admin-content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .admin-content h1 {
+            font-size: 24px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .admin-content ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .admin-content li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1>Superuser Dashboard</h1>
+    </div>
+    <div class="admin-sidebar">
+        <h2>Site Administration</h2>
+        <ul>
+            <li><a href="{% url 'superuser_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'department_list' %}">Departments</a></li>
+            <li><a href="{% url 'manage_employees' %}">Employees</a></li>
+            <li><a href="{% url 'manage_leaves' %}">Leaves</a></li>
+            <li><a href="{% url 'attendance_list' %}">Attendances</a></li>
+            <li><a href="{% url 'payroll_management' %}">Salaries & Payslips</a></li>
+            <li><a href="{% url 'performance_management' %}">Performance Reviews</a></li>
+            <li><a href="{% url 'view_notices' %}">Notices</a></li>
+            <li><a href="{% url 'settings' %}">Settings</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+    <div class="admin-content">
+        <h2>Overview</h2>
+        <ul>
+            <li>Total Users: {{ total_users }}</li>
+            <li>Total Departments: {{ total_departments }}</li>
+            <li>Total Employees: {{ total_employees }}</li>
+            <li>Total Attendance Records: {{ total_attendance_records }}</li>
+            <li>Total Salaries: {{ total_salaries }}</li>
+            <li>Total Payslips: {{ total_payslips }}</li>
+            <li>Total Performance Reviews: {{ total_performance_reviews }}</li>
+            <li>Total Leaves: {{ total_leaves }}</li>
+            <li>Total Notices: {{ total_notices }}</li>
+        </ul>
+    </div>
+</body>
+</html>

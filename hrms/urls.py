@@ -12,6 +12,7 @@ urlpatterns = [
     path('', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', views.custom_logout, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('superuser_dashboard/', views.superuser_dashboard, name='superuser_dashboard'),
     path('payroll/', views.payroll_management, name='payroll_management'),
     path('employees/manage/', views.manage_employees, name='manage_employees'),
     path('attendance/mark/', views.mark_attendance, name='mark_attendance'),

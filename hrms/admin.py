@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User, DutyStation, Department, Employee, Attendance, Salary, Payslip, PerformanceReview, Leave, Notice
 
+admin.site.site_header = "Human Resource Management System"
+
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_admin', 'duty_station')
     list_filter = ('is_staff', 'is_admin', 'duty_station')

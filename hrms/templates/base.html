@@ -4,224 +4,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}hrms{% endblock %}</title>
-    <link rel="icon" type="image/png" href="{% static 'Coat.png' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>HRMS Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            font-size: 75%;
-            background-color: #f5f7fa;
-            color: #333;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2980b9;
+            --background-color: #ecf0f1;
+            --text-color: #2c3e50;
+            --sidebar-width: 250px;
         }
-        .container {
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
             display: flex;
             height: 100vh;
+            overflow: hidden;
         }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
         .sidebar {
-            width: 250px;
-            text-align: center;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 20px;
-            box-sizing: border-box;
-            transition: transform 0.3s ease;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            z-index: 1000;
+            background-color: var(--primary-color);
+            color: white;
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: width 0.3s ease;
         }
-        .sidebar.collapsed {
-            transform: translateX(-100%);
+
+        .sidebar.expanded {
+            width: 70px;
         }
-        .sidebar h4 {
-            text-align: center;
-            font-weight: 500;
+
+        .sidebar img {
+            margin: 20px 0;
+            border-radius: 50%;
         }
-        .sidebar h4 a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .sidebar h4 a:hover {
-            color: #3498db;
-        }
+
         .sidebar ul {
             list-style: none;
             padding: 0;
+            width: 100%;
         }
+
         .sidebar ul li {
-            margin: 10px 0;
+            width: 100%;
         }
+
         .sidebar ul li a {
-            color: #ecf0f1;
+            color: white;
             text-decoration: none;
             display: flex;
             align-items: center;
-            font-size: 0.9em;
-            padding: 8px;
-            transition: all 0.3s;
-            border-radius: 5px;
+            padding: 15px 20px;
+            width: 100%;
+            transition: background-color 0.3s ease;
         }
-.sidebar ul li a.active {
-    background-color: #34495e;
-    padding-left: 15px;
-    text-decoration-color: #3498db; /* Change underline color */
-}
-        .sidebar ul li a:hover {
-            background-color: #34495e;
-            padding-left: 15px;
+
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background-color: var(--secondary-color);
         }
+
         .sidebar ul li a i {
-            margin-right: 8px;
-            width: 16px;
-            text-align: center;
-            font-size: 0.9em;
+            margin-right: 15px;
         }
-                .footer {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            padding: 10px;
-            text-align: center;
-            font-size: 0.8em;
-            color: #ecf0f1;
-            background-color: #2c3e50;
-            border-radius: 5px;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.5em;
-            color: #fff;
-            cursor: pointer;
-            display: none;
-        }
+
         .main-content {
-            flex: 1;
-            padding: 30px;
-            box-sizing: border-box;
-            margin-left: 250px;
+            flex-grow: 1;
+            background-color: white;
+            padding: 20px;
+            overflow-y: auto;
             transition: margin-left 0.3s ease;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
-        .header h1 {
-            margin: 0;
-            font-weight: 500;
-            color: #2c3e50;
-        }
+
         .menu-toggle {
             display: none;
-            font-size: 1.5em;
             cursor: pointer;
-            color: #2c3e50;
         }
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 30px;
-            margin-top: 10px;
-        }
-        .stat-item {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
+
+        .footer {
             text-align: center;
-            flex: 1;
-            margin: 0 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-        }
-        .stat-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-        .stat-item h3 {
-            margin: 0 0 10px 0;
-            font-weight: 400;
-            color: #7f8c8d;
-        }
-        .stat-item p {
-            font-size: 1.8em;
-            margin: 0;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        .content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .content h2 {
-            margin-top: 0;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-        table {
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            position: absolute;
+            bottom: 0;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
         }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
+
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                transform: translateX(-100%);
-            }
-            .sidebar.expanded {
-                transform: translateX(0);
-            }
-            .close-btn {
-                display: block;
-            }
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 20px;
-            }
             .menu-toggle {
                 display: block;
             }
-            .stats {
-                flex-direction: column;
+
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                height: 100%;
+                z-index: 1000;
+                width: var(--sidebar-width);
+                transition: left 0.3s ease;
             }
-            .stat-item {
-                margin: 10px 0;
+
+            .sidebar.expanded {
+                left: 0;
             }
-            table, th, td {
-                font-size: 0.8em;
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
             }
-        }
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.2em;
+
+            .sidebar .close-btn {
+                display: block;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
             }
-            table, th, td {
-                font-size: 0.7em;
+
+            .close-btn {
+                display: none;
             }
         }
     </style>
@@ -229,72 +149,68 @@
 <body>
     <div class="container">
         <div class="sidebar">
-
             <div class="close-btn"><i class="fas fa-times"></i></div>
             <img src="{% static 'Coat.png' %}" alt="Coat Image" width="90" height="auto">
 
-<ul>
-
-    <li>
-        <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            <i class="fas fa-tachometer-alt"></i> Employee Portal
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_profile' %}" class="{% if request.resolver_match.url_name == 'employee_profile' %}active{% endif %}">
-            <i class="fas fa-user"></i> My Profile
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_attendance' %}" class="{% if request.resolver_match.url_name == 'employee_attendance' %}active{% endif %}">
-            <i class="fas fa-clock"></i> My Attendance
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_leave_request' %}" class="{% if request.resolver_match.url_name == 'employee_leave_request' %}active{% endif %}">
-            <i class="fas fa-calendar-alt"></i> Leave Requests
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_payslips' %}" class="{% if request.resolver_match.url_name == 'employee_payslips' %}active{% endif %}">
-            <i class="fas fa-file-invoice-dollar"></i> My Payslips
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_performance' %}" class="{% if request.resolver_match.url_name == 'employee_performance' %}active{% endif %}">
-            <i class="fas fa-chart-line"></i> Performance Reviews
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_salary_info' %}" class="{% if request.resolver_match.url_name == 'employee_salary_info' %}active{% endif %}">
-            <i class="fas fa-money-bill-wave"></i> Salary Information
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_notifications' %}" class="{% if request.resolver_match.url_name == 'employee_notifications' %}active{% endif %}">
-            <i class="fas fa-bell"></i> Notifications
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'employee_team' %}" class="{% if request.resolver_match.url_name == 'employee_team' %}active{% endif %}">
-            <i class="fas fa-users"></i> My Team
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'logout' %}" class="{% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </a>
-    </li>
-</ul>
-
+            <ul>
+                <li>
+                    <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-tachometer-alt"></i> Employee Portal
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_profile' %}" class="{% if request.resolver_match.url_name == 'employee_profile' %}active{% endif %}">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_attendance' %}" class="{% if request.resolver_match.url_name == 'employee_attendance' %}active{% endif %}">
+                        <i class="fas fa-clock"></i> My Attendance
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_leave_request' %}" class="{% if request.resolver_match.url_name == 'employee_leave_request' %}active{% endif %}">
+                        <i class="fas fa-calendar-alt"></i> Leave Requests
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_payslips' %}" class="{% if request.resolver_match.url_name == 'employee_payslips' %}active{% endif %}">
+                        <i class="fas fa-file-invoice-dollar"></i> My Payslips
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_performance' %}" class="{% if request.resolver_match.url_name == 'employee_performance' %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Performance Reviews
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_salary_info' %}" class="{% if request.resolver_match.url_name == 'employee_salary_info' %}active{% endif %}">
+                        <i class="fas fa-money-bill-wave"></i> Salary Information
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_notifications' %}" class="{% if request.resolver_match.url_name == 'employee_notifications' %}active{% endif %}">
+                        <i class="fas fa-bell"></i> Notifications
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'employee_team' %}" class="{% if request.resolver_match.url_name == 'employee_team' %}active{% endif %}">
+                        <i class="fas fa-users"></i> My Team
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'logout' %}" class="{% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
         </div>
         <div class="main-content">
-        {% block content %}
-        {% endblock %}
+            {% block content %}
+            {% endblock %}
         </div>
-
     </div>
-            <div class="footer">
+    <div class="footer">
         &copy; 2024 HRMS | CLINAK. All rights reserved.
     </div>
     <script>

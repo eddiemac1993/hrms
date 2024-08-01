@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">
+    <img src="{% static 'admin/img/your_logo.png' %}" alt="Logo" height="40px">
+    Human Resource Management System
+  </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  #header {
+    height: auto;
+    padding: 5px 40px;
+  }
+  #branding h1 {
+    margin: 0;
+    font-weight: 300;
+    font-size: 24px;
+  }
+  #branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: #fff;
+  }
+  #branding h1 img {
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+</style>
+{% endblock %}
