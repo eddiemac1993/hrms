@@ -36,32 +36,6 @@ def register(request):
 def superuser_required(view_func):
     return user_passes_test(lambda u: u.is_superuser)(view_func)
 
-@superuser_required
-def superuser_dashboard(request):
-    # Counts for various models
-    total_users = User.objects.count()
-    total_departments = Department.objects.count()
-    total_employees = Employee.objects.count()
-    total_attendance_records = Attendance.objects.count()
-    total_salaries = Salary.objects.count()
-    total_payslips = Payslip.objects.count()
-    total_performance_reviews = PerformanceReview.objects.count()
-    total_leaves = Leave.objects.count()
-    total_notices = Notice.objects.count()
-
-    context = {
-        'total_users': total_users,
-        'total_departments': total_departments,
-        'total_employees': total_employees,
-        'total_attendance_records': total_attendance_records,
-        'total_salaries': total_salaries,
-        'total_payslips': total_payslips,
-        'total_performance_reviews': total_performance_reviews,
-        'total_leaves': total_leaves,
-        'total_notices': total_notices,
-    }
-    return render(request, 'superuser_dashboard.html', context)
-
 @login_required
 def dashboard(request):
     user_duty_station = request.user.duty_station

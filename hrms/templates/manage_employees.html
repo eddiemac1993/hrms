@@ -1,142 +1,259 @@
 {% extends 'admin_base.html' %}
 
-{% block title %}Manage Employee{% endblock %}
-<style>
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            box-sizing: border-box;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: auto;
-            margin-left: 250px;
-            transition: margin-left 0.3s ease;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            margin: 0;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        .menu-toggle {
-            display: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: #2c3e50;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        .action-btns {
-            display: flex;
-            align-items: center;
-        }
-        .edit-btn, .delete-btn {
-            color: #3498db;
-            margin-left: 10px;
-            text-decoration: none;
-            font-size: 1.2em;
-        }
-        .edit-btn:hover, .delete-btn:hover {
-            color: #2980b9;
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                transform: translateX(-100%);
-            }
-            .sidebar.expanded {
-                transform: translateX(0);
-            }
-            .close-btn {
-                display: block;
-            }
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 20px;
-            }
-            .menu-toggle {
-                display: block;
-            }
-            table, th, td {
-                font-size: 0.8em;
-            }
-        }
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.2em;
-            }
-            table, th, td {
-                font-size: 0.7em;
-            }
-        }
-    </style>
-</head>
-{% block content %}
-            <div class="header">
-                <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-                <h1>Welcome, Admin</h1>
-            </div>
-            <div class="content">
-                <h2>Employee Management</h2>
-                <div class="action-btns">
-                    <a href="{% url 'add_employee' %}" class="edit-btn"><i class="fas fa-user-plus"></i> Add New Employee</a>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Department</th>
-                            <th>Position</th>
-                            <th>Date Joined</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for employee in employees %}
-                        <tr>
-                            <td>{{ employee.full_name }}</td>
-                            <td>{{ employee.user.email }}</td>
-                            <td>{{ employee.department }}</td>
-                            <td>{{ employee.position }}</td>
-                            <td>{{ employee.date_joined }}</td>
-                            <td>
-                                <a href="{% url 'edit_employee' employee.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="{% url 'delete_employee' employee.id %}" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                                                        <td colspan="7" class="empty-message">No employee records found.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-{% endblock %}
+{% block title %}Manage Employees{% endblock %}
 
+{% block content %}
+<div class="employee-management-container">
+    <div class="page-header">
+        <h1>Employee Management</h1>
+        <a href="{% url 'add_employee' %}" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Add New Employee
+        </a>
+    </div>
+
+    <div class="employee-list-content">
+        {% if employees %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Position</th>
+                        <th>Date Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.full_name }}</td>
+                        <td>{{ employee.user.email }}</td>
+                        <td>{{ employee.department }}</td>
+                        <td>{{ employee.position }}</td>
+                        <td>{{ employee.date_joined }}</td>
+                        <td class="action-buttons">
+                            <a href="{% url 'edit_employee' employee.id %}" class="btn btn-icon btn-edit" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'delete_employee' employee.id %}" class="btn btn-icon btn-delete" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fas fa-user-slash"></i>
+            <p>No employee records found. Click the button above to add a new employee.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f5f7fa;
+        --text-color: #333;
+        --text-light: #777;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --border-color: #e0e0e0;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    .employee-management-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: var(--transition);
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+        background-color: #3178c6;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn i {
+        margin-right: 0.5rem;
+    }
+
+    .employee-list-content {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+        background-color: var(--secondary-color);
+        font-weight: 600;
+        color: var(--text-color);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .data-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .data-table tr:hover {
+        background-color: var(--secondary-color);
+    }
+
+    .data-table td:first-child,
+    .data-table th:first-child {
+        border-left: 1px solid var(--border-color);
+    }
+
+    .data-table td:last-child,
+    .data-table th:last-child {
+        border-right: 1px solid var(--border-color);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-icon {
+        padding: 0.5rem;
+        border-radius: 25%;
+        font-size: 1rem;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-edit {
+        background-color: var(--warning-color);
+    }
+
+    .btn-edit:hover {
+        background-color: #e67e22;
+    }
+
+    .btn-delete {
+        background-color: var(--danger-color);
+    }
+
+    .btn-delete:hover {
+        background-color: #c0392b;
+    }
+
+    .no-data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        background-color: var(--secondary-color);
+        border-radius: 12px;
+        color: var(--text-light);
+        text-align: center;
+    }
+
+    .no-data i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .data-table, .data-table th, .data-table td {
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('expanded');
+            });
+        }
+    });
+</script>
+{% endblock %}

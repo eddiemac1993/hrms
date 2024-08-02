@@ -1,170 +1,244 @@
 {% extends 'admin_base.html' %}
+
 {% block title %}Department List{% endblock %}
 
-{% block extra_styles %}
+{% block header %}Department Management{% endblock %}
+
+{% block content %}
+<div class="department-list-container">
+    <div class="page-header">
+        <h1>Department Management</h1>
+        <a href="{% url 'add_department' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Department
+        </a>
+    </div>
+
+    <div class="department-list-content">
+        {% if departments %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        
+                        <th>Name</th>
+                        <th>Employees</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for department in departments %}
+                    <tr>
+                        
+                        <td>{{ department.name }}</td>
+                        <td>{{ department.employee_set.count }}</td>
+                        <td class="action-buttons">
+                            <a href="{% url 'edit_department' department.id %}" class="btn btn-icon btn-edit" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'delete_department' department.id %}" class="btn btn-icon btn-delete" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-data">
+            <i class="fas fa-info-circle"></i>
+            <p>No departments found. Click the button above to add a new department.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 <style>
-    .content {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f5f7fa;
+        --text-color: #333;
+        --text-light: #777;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --border-color: #e0e0e0;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    .department-list-container {
+        max-width: 1200px;
+        margin: 0 auto;
         padding: 2rem;
     }
 
-    .header {
+    .page-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
     }
 
-    .header h1 {
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: #2c3e50;
-        margin: 0;
+    .page-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
     }
 
-    .action-btns {
-        margin-bottom: 1.5rem;
-    }
-
-    .add-btn {
-        display: inline-block;
-        background-color: #3498db;
-        color: #fff;
-        padding: 0.7rem 1.2rem;
-        border-radius: 6px;
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--primary-color);
+        color: white;
         text-decoration: none;
-        font-weight: 500;
-        transition: background-color 0.3s;
+        border-radius: 8px;
+        transition: var(--transition);
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .add-btn:hover {
-        background-color: #2980b9;
+    .btn:hover {
+        background-color: #3178c6;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
     }
 
-    table {
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn i {
+        margin-right: 0.5rem;
+    }
+
+    .department-list-content {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .data-table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        background-color: #fff;
-        border-radius: 8px;
-        overflow: hidden;
     }
 
-    th, td {
+    .data-table th,
+    .data-table td {
         padding: 1rem;
         text-align: left;
-        border-bottom: 1px solid #e0e0e0;
+        border-bottom: 1px solid var(--border-color);
     }
 
-    th {
-        background-color: #f8f9fa;
+    .data-table th {
+        background-color: var(--secondary-color);
         font-weight: 600;
-        color: #2c3e50;
+        color: var(--text-color);
         text-transform: uppercase;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 2px solid var(--border-color);
     }
 
-    tr:last-child td {
+    .data-table tr:last-child td {
         border-bottom: none;
     }
 
-    tr:hover {
-        background-color: #f8f9fa;
+    .data-table tr:hover {
+        background-color: var(--secondary-color);
     }
 
-    .edit-btn, .delete-btn {
-        color: #3498db;
-        margin-right: 0.8rem;
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.3s;
+    .data-table td:first-child,
+    .data-table th:first-child {
+        border-left: 1px solid var(--border-color);
     }
 
-    .edit-btn:hover, .delete-btn:hover {
-        color: #2980b9;
+    .data-table td:last-child,
+    .data-table th:last-child {
+        border-right: 1px solid var(--border-color);
     }
 
-    .delete-btn {
-        color: #e74c3c;
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
     }
 
-    .delete-btn:hover {
-        color: #c0392b;
+    .btn-icon {
+        padding: 0.5rem;
+        border-radius: 25%;
+        font-size: 1rem;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .empty-message {
-        text-align: center;
-        color: #7f8c8d;
+    .btn-edit {
+        background-color: var(--warning-color);
+    }
+
+    .btn-edit:hover {
+        background-color: #e67e22;
+    }
+
+    .btn-delete {
+        background-color: var(--danger-color);
+    }
+
+    .btn-delete:hover {
+        background-color: #c0392b;
+    }
+
+    .no-data {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        background-color: var(--secondary-color);
+        border-radius: 12px;
+        color: var(--text-light);
         font-style: italic;
     }
 
+    .no-data i {
+        font-size: 2rem;
+        margin-right: 1rem;
+        color: var(--primary-color);
+    }
+
     @media (max-width: 768px) {
-        .header {
+        .page-header {
             flex-direction: column;
             align-items: flex-start;
+            gap: 1rem;
         }
 
-        .header h1 {
-            margin-bottom: 1rem;
+        .data-table, .data-table th, .data-table td {
+            font-size: 0.875rem;
         }
 
-        .action-btns {
-            margin-bottom: 1rem;
-        }
-
-        table, th, td {
-            font-size: 0.9rem;
+        .btn {
+            padding: 0.5rem 1rem;
         }
     }
 </style>
-{% endblock %}
-<div class="main-content">
-            <div class="header">
-                <h1>{% block header_title %}Dashboard{% endblock %}</h1>
-                <div class="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </div>
-            </div>
-{% block content %}
-<div class="content">
-    <div class="header">
-        <h1>Department Management</h1>
-        <div class="action-btns">
-            <a href="{% url 'add_department' %}" class="add-btn">
-                <i class="fas fa-plus"></i> Add New Department
-            </a>
-        </div>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for department in departments %}
-            <tr>
-                <td>{{ department.id }}</td>
-                <td>{{ department.name }}</td>
-                <td>
-                    <a href="{% url 'edit_department' department.id %}" class="edit-btn">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a href="{% url 'delete_department' department.id %}" class="delete-btn">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3" class="empty-message">No departments found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 {% endblock %}
