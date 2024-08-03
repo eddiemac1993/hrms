@@ -5,10 +5,11 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.http import HttpResponse
 from .forms import UserRegistrationForm, DepartmentForm, UserForm, LeaveRequestForm, EmployeeProfileForm, AttendanceForm, LeaveForm, EmployeeForm, PerformanceReviewForm, NoticeForm
-from .models import User, Payslip, Salary, Employee, Attendance, Leave, PerformanceReview, Notice, Department
+from .models import User, Payslip, Employee, Attendance, Leave, PerformanceReview, Notice, Department
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib import messages
+import calendar
 
 def register(request):
     if request.method == 'POST':
@@ -39,6 +40,7 @@ def superuser_required(view_func):
 @login_required
 def dashboard(request):
     user_duty_station = request.user.duty_station
+
     if request.user.is_admin:
         total_employees = Employee.objects.filter(duty_station=user_duty_station).count()
         departments = Department.objects.filter(duty_station=user_duty_station)
@@ -52,7 +54,7 @@ def dashboard(request):
         absent_employees = total_employees - present_employees
         present_employees_list = [attendance.employee for attendance in present_attendances]
 
-        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('date_posted').first()
+        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('-date_posted').first()
 
         return render(request, 'admin_dashboard.html', {
             'total_employees': total_employees,
@@ -63,7 +65,77 @@ def dashboard(request):
             'first_notice': first_notice,
         })
     else:
-        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('date_posted').first()
+        # Example data - Replace these with real calculations
+        leave_balance = 15
+        upcoming_holidays = 3
+        performance_score = 4.5
+        pending_tasks = 7
+
+        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('-date_posted').first()
+        present_days = Attendance.objects.filter(employee__user=request.user, time_in__isnull=False).count()
+        absent_days = Attendance.objects.filter(employee__user=request.user, time_in__isnull=True).count()
+
+        return render(request, 'employee_dashboard.html', {
+            'leave_balance': leave_balance,
+            'upcoming_holidays': upcoming_holidays,
+            'performance_score': performance_score,
+            'pending_tasks': pending_tasks,
+            'first_notice': first_notice,
+            'present_days': present_days,
+            'absent_days': absent_days,
+        })
+
+
+@login_required
+def employee_dashboard(request):
+    user = request.user
+    user_duty_station = user.duty_station
+
+    if user.is_employee:
+        employee = Employee.objects.get(user=user)
+
+        # Calculate leave balance
+        total_leave_days = 30  # Example quota, adjust based on your policy
+        approved_leaves = Leave.objects.filter(employee=employee, status='APPROVED')
+        taken_leave_days = sum((leave.end_date - leave.start_date).days + 1 for leave in approved_leaves)
+        leave_balance = total_leave_days - taken_leave_days
+
+        # Pending tasks (if a task model exists, replace with real data)
+        pending_tasks = 7  # Placeholder value, adjust based on your data
+
+        # Calculate present and absent days
+        today = timezone.now().date()
+        total_days = Attendance.objects.filter(employee=employee).count()
+        present_days = Attendance.objects.filter(employee=employee, time_out__isnull=False).count()
+        absent_days = total_days - present_days
+
+        # Get attendance data for the calendar
+        attendance_data = Attendance.objects.filter(employee=employee)
+
+        # Generate calendar for the current month
+        now = timezone.now()
+        cal = calendar.Calendar(firstweekday=6)
+        month_days = cal.monthdayscalendar(now.year, now.month)
+
+        # Format attendance data
+        present_dates = {att.date.day for att in attendance_data if att.time_out}
+        absent_dates = {att.date.day for att in attendance_data if not att.time_out}
+
+        # Get first notice
+        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('-date_posted').first()
+
+        return render(request, 'employee_dashboard.html', {
+            'leave_balance': leave_balance,
+            'pending_tasks': pending_tasks,
+            'present_days': present_days,
+            'absent_days': absent_days,
+            'first_notice': first_notice,
+            'month_days': month_days,
+            'present_dates': present_dates,
+            'absent_dates': absent_dates,
+        })
+    else:
+        first_notice = Notice.objects.filter(duty_station=user_duty_station).order_by('-date_posted').first()
         return render(request, 'employee_dashboard.html', {
             'first_notice': first_notice,
         })
@@ -130,12 +202,33 @@ def mark_attendance(request):
         form = AttendanceForm()
     return render(request, 'mark_attendance.html', {'form': form})
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Attendance, CentralLocation
+from geopy.distance import distance as geopy_distance
+
 @login_required
 def attendance_list(request):
     if request.user.is_admin:
         attendances = Attendance.objects.select_related('employee__user').all()
     else:
         attendances = Attendance.objects.select_related('employee__user').filter(employee=request.user.employee)
+
+    for attendance in attendances:
+        if attendance.employee.duty_station:
+            central_location = CentralLocation.objects.get(duty_station=attendance.employee.duty_station)
+            if attendance.location_in:
+                lat_in, lon_in = map(float, attendance.location_in.split(','))
+                attendance.distance_in = geopy_distance(
+                    (central_location.latitude, central_location.longitude),
+                    (lat_in, lon_in)
+                ).kilometers
+            if attendance.location_out:
+                lat_out, lon_out = map(float, attendance.location_out.split(','))
+                attendance.distance_out = geopy_distance(
+                    (central_location.latitude, central_location.longitude),
+                    (lat_out, lon_out)
+                ).kilometers
 
     return render(request, 'attendance_list.html', {'attendances': attendances})
 
@@ -304,14 +397,6 @@ def leave_requests(request):
     return render(request, 'leave_requests.html')
 
 @login_required
-def employee_dashboard(request):
-    employee = request.user.employee
-    context = {
-        'employee': employee,
-    }
-    return render(request, 'employee/dashboard.html', context)
-
-@login_required
 def employee_profile(request):
     employee = request.user.employee
     if request.method == 'POST':
@@ -327,34 +412,60 @@ def employee_profile(request):
     }
     return render(request, 'profile.html', context)
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from .models import Attendance
+
 @login_required
 def employee_attendance(request):
     employee = request.user.employee
     today = timezone.now().date()
-    attendance = Attendance.objects.filter(employee=employee, date=today).first()
+    attendance, created = Attendance.objects.get_or_create(employee=employee, date=today)
 
     if request.method == 'POST':
-        if not attendance:
-            attendance = Attendance.objects.create(employee=employee, date=today)
-        else:
-            attendance.time_out = timezone.now().time()
-            attendance.save()
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
+        location = f"{latitude},{longitude}"
+
+        if not attendance.time_in:
+            attendance.time_in = timezone.now()
+            attendance.location_in = location
+            attendance.calculate_distance_in()
+        elif not attendance.time_out:
+            attendance.time_out = timezone.now()
+            attendance.location_out = location
+            attendance.calculate_distance_out()
+
+        attendance.save()
+        return redirect('employee_attendance')
 
     context = {
         'attendance': attendance,
     }
     return render(request, 'attendance.html', context)
 
-def edit_attendance(request, attendance_id):
-    attendance = get_object_or_404(Attendance, id=attendance_id)
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Attendance
+from .forms import AttendanceForm
+
+def edit_attendance(request, pk):
+    attendance = get_object_or_404(Attendance, pk=pk)
+
     if request.method == 'POST':
         form = AttendanceForm(request.POST, instance=attendance)
         if form.is_valid():
             form.save()
-            return redirect('attendance_list')
+            # Redirect to a success page or back to the list
     else:
         form = AttendanceForm(instance=attendance)
-    return render(request, 'edit_attendance.html', {'form': form})
+
+    return render(request, 'edit_attendance.html', {
+        'attendance': attendance,
+        'form': form
+    })
 
 @login_required
 def check_in_out(request):
@@ -423,15 +534,6 @@ def employee_performance(request):
         'reviews': reviews,
     }
     return render(request, 'performance.html', context)
-
-@login_required
-def employee_salary_info(request):
-    employee = request.user.employee
-    salary = Salary.objects.filter(employee=employee).first()
-    context = {
-        'salary': salary,
-    }
-    return render(request, 'salary_info.html', context)
 
 @login_required
 def employee_notifications(request):

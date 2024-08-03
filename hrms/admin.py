@@ -1,8 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, DutyStation, Department, Employee, Attendance, Salary, Payslip, PerformanceReview, Leave, Notice
+from .models import User, DutyStation, Department, Employee, Attendance, Payslip, PerformanceReview, Leave, Notice
 
 admin.site.site_header = "Human Resource Management System"
+
+# admin.py
+from django.contrib import admin
+from .models import CentralLocation
+
+admin.site.register(CentralLocation)
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_admin', 'duty_station')
@@ -55,7 +61,6 @@ admin.site.register(DutyStation)
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Attendance, AttendanceAdmin)
-admin.site.register(Salary, SalaryAdmin)
 admin.site.register(Payslip, PayslipAdmin)
 admin.site.register(PerformanceReview, PerformanceReviewAdmin)
 admin.site.register(Leave, LeaveAdmin)

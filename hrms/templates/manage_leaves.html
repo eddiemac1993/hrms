@@ -1,17 +1,12 @@
 {% extends 'admin_base.html' %}
 
-{% block title %}Leave Management{% endblock %}
+{% block title %}Manage Leaves{% endblock %}
 
-{% block header %}Leave Management{% endblock %}
+{% block content_title %}Manage Leaves{% endblock %}
 
 {% block content %}
-<div class="leave-management-container">
-    <div class="page-header">
-        <h1>Welcome, Admin</h1>
-    </div>
-
+<div class="">
     <div class="content">
-        <h2>Manage Leaves</h2>
         <div class="table-responsive">
             <table class="data-table">
                 <thead>
@@ -54,109 +49,69 @@
 </div>
 
 <style>
-    :root {
-        --primary-color: #4a90e2;
-        --secondary-color: #f5f7fa;
-        --text-color: #333;
-        --text-light: #777;
-        --success-color: #27ae60;
-        --warning-color: #f39c12;
-        --danger-color: #e74c3c;
-        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s ease;
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--secondary-color);
-        color: var(--text-color);
-        line-height: 1.6;
-    }
-
     .leave-management-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        max-width: 1000px;
+        margin: 20px auto;
     }
 
     .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
+        margin-bottom: 20px;
     }
 
     .page-header h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
+        font-size: 24px;
+        color: #333333;
+        margin: 0;
     }
 
     .content h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
+        font-size: 20px;
+        color: #333333;
+        margin: 0 0 20px 0;
     }
 
     .data-table {
         width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
+        border-collapse: collapse;
     }
 
-    .data-table th,
-    .data-table td {
-        padding: 1rem;
+    .data-table th, .data-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
         text-align: left;
-        border-bottom: 1px solid var(--secondary-color);
+        font-size: 14px;
     }
 
     .data-table th {
-        background-color: var(--secondary-color);
-        font-weight: 600;
-        color: var(--text-color);
-        text-transform: uppercase;
-        font-size: 0.75rem;
+        background-color: #007bff;
+        color: white;
     }
 
-    .data-table tr:last-child td {
-        border-bottom: none;
+    .data-table tr:nth-child(even) {
+        background-color: #f2f2f2;
     }
 
     .data-table tr:hover {
-        background-color: var(--secondary-color);
+        background-color: #ddd;
     }
 
     .document-link {
-        color: var(--primary-color);
+        color: #007bff;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .document-link:hover {
         text-decoration: underline;
-        font-weight: 600;
     }
 
     .empty-message {
-        font-style: italic;
-        color: var(--text-light);
-    }
-
-    @media (max-width: 768px) {
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .data-table, .data-table th, .data-table td {
-            font-size: 0.875rem;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-        }
+        color: #666666;
+        font-size: 14px;
     }
 </style>
 {% endblock %}

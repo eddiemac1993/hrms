@@ -53,11 +53,22 @@ class EmployeeProfileForm(forms.ModelForm):
 class AttendanceForm(forms.ModelForm):
     time_in = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
     time_out = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}), required=False)
-    location = forms.CharField(max_length=255)
+    latitude = forms.FloatField(widget=forms.HiddenInput())
+    longitude = forms.FloatField(widget=forms.HiddenInput())
 
     class Meta:
         model = Attendance
-        fields = ['date', 'time_in', 'time_out', 'location']
+        fields = ['date', 'time_in', 'time_out', 'latitude', 'longitude']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        latitude = cleaned_data.get('latitude')
+        longitude = cleaned_data.get('longitude')
+
+        if latitude and longitude:
+            cleaned_data['location'] = f"{latitude},{longitude}"
+
+        return cleaned_data
 
 class LeaveForm(forms.ModelForm):
     class Meta:

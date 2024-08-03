@@ -71,6 +71,10 @@ class Employee(models.Model):
     def full_name(self):
         return self.user.get_full_name()
 
+from django.db import models
+from django.utils import timezone
+from geopy.distance import distance as geopy_distance
+
 class Attendance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField()
@@ -83,17 +87,6 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.employee} - {self.date}"
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.time_in = timezone.now()
-            self.location_in = self.location_in if self.location_in else "Default Location In"
-            self.calculate_distance_in()
-        else:
-            self.time_out = timezone.now()
-            self.location_out = self.location_out if self.location_out else "Default Location Out"
-            self.calculate_distance_out()
-        super().save(*args, **kwargs)
 
     def calculate_distance_in(self):
         if self.location_in and self.employee.duty_station:
@@ -115,19 +108,13 @@ class Attendance(models.Model):
 
     @staticmethod
     def calculate_distance(lat1, lon1, lat2, lon2):
-        return distance((lat1, lon1), (lat2, lon2)).kilometers
+        return geopy_distance((lat1, lon1), (lat2, lon2)).kilometers
 
     @staticmethod
     def parse_location(location_str):
         lat, lon = map(float, location_str.split(','))
         return lat, lon
 
-class Salary(models.Model):
-    employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.employee} - {self.amount}"
 
 class Payslip(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)

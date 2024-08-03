@@ -3,130 +3,153 @@
 {% block title %}Employee Dashboard{% endblock %}
 
 {% block content %}
-    <div class="header">
-        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-        <p class="welcome-message">Welcome, {{ request.user.get_full_name|default:request.user.username }}</p>
-    </div>
-    <div class="dashboard-content">
-        <div class="stats">
-            <div class="stat-item">
-                <h3><i class="fas fa-calendar-alt"></i> Leave Balance</h3>
-                <p>15 days</p>
-            </div>
-            <div class="stat-item">
-                <h3><i class="fas fa-calendar-check"></i> Upcoming Holidays</h3>
-                <p>3</p>
-            </div>
-            <div class="stat-item">
-                <h3><i class="fas fa-chart-line"></i> Performance Score</h3>
-                <p>4.5/5</p>
-            </div>
-            <div class="stat-item">
-                <h3><i class="fas fa-tasks"></i> Pending Tasks</h3>
-                <p>7</p>
-            </div>
+<style>
+    .dashboard-content {
+        padding: 2rem;
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-item {
+        background-color: #fff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+    }
+
+    .stat-item h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: #007bff;
+    }
+
+    .stat-item p {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .notice {
+        margin-top: 1rem;
+    }
+
+    .read-more-btn {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: 600;
+    }
+
+    .read-more-btn i {
+        margin-left: 0.5rem;
+    }
+
+    .calendar {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+    }
+
+    .calendar table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .calendar th, .calendar td {
+        padding: 0.5rem;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+
+    .calendar th {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .calendar td.present {
+        background-color: #d4edda;
+    }
+
+    .calendar td.absent {
+        background-color: #f8d7da;
+    }
+
+    .calendar td.empty {
+        background-color: #f8f9fa;
+    }
+</style>
+
+<div class="dashboard-content">
+    <div class="stats">
+        <div class="stat-item">
+            <h3><i class="fas fa-calendar-alt"></i> Leave Balance</h3>
+            <p>{{ leave_balance }} days</p>
         </div>
-        <hr/>
-        <div class="stats">
-            <div class="stat-item">
-               <h2><i class="fas fa-bell"></i> Notice</h2>
-                <p>{{ first_notice.title }}</p>
-                {% if first_notice %}
-                <div class="notice">
-                    <a href="{% url 'notice_detail' first_notice.id %}" class="read-more-btn">Read more <i class="fas fa-arrow-right"></i></a>
-                </div>
-                {% else %}
-                <p>No notices available.</p>
-                {% endif %}
-            </div>
-            <div class="stat-item">
-                <h3><i class="fas fa-calendar-alt"></i> Leave Balance</h3>
-                <p>15 days</p>
-            </div>
+        <div class="stat-item">
+            <h3><i class="fas fa-tasks"></i> Pending Tasks</h3>
+            <p>{{ pending_tasks }}</p>
+        </div>
+        <div class="stat-item">
+            <h3><i class="fas fa-calendar-day"></i> Present Days</h3>
+            <p>{{ present_days }}</p>
+        </div>
+        <div class="stat-item">
+            <h3><i class="fas fa-calendar-times"></i> Absent Days</h3>
+            <p>{{ absent_days }}</p>
         </div>
     </div>
-    <style>
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background-color: #2c3e50;
-            color: white;
-        }
-
-        .welcome-message {
-            margin: 0;
-            font-size: 1.2em;
-        }
-
-        .menu-toggle {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .menu-toggle:hover {
-            background-color: #34495e;
-        }
-
-        .menu-toggle i {
-            font-size: 1.5em;
-        }
-
-        .dashboard-content {
-            padding: 20px;
-        }
-
-        .stats {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .stat-item {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-item h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-
-        .stat-item p {
-            font-size: 16px;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .read-more-btn {
-            display: inline-block;
-            text-align: center;
-            font-size: 0.8em;
-            color: #ecf0f1;
-            background-color: #2c3e50;
-            border-radius: 5px;
-            padding: 10px 15px;
-            text-decoration: none;
-        }
-
-        .read-more-btn:hover {
-            background-color: #34495e;
-        }
-
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: flex;
-            }
-        }
-    </style>
+    <hr/>
+    <div class="stats">
+        <div class="stat-item">
+            <h2><i class="fas fa-bell"></i> Notice</h2>
+            {% if first_notice %}
+            <p>{{ first_notice.title }}</p>
+            <div class="notice">
+                <a href="{% url 'notice_detail' first_notice.id %}" class="read-more-btn">Read more <i class="fas fa-arrow-right"></i></a>
+            </div>
+            {% else %}
+            <p>No notices available.</p>
+            {% endif %}
+        </div>
+    </div>
+    <hr/>
+    <div class="calendar">
+        <h3>Attendance Calendar</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for week in month_days %}
+                <tr>
+                    {% for day in week %}
+                    {% if day == 0 %}
+                    <td class="empty"></td>
+                    {% else %}
+                    <td class="{% if day in present_dates %}present{% elif day in absent_dates %}absent{% endif %}">{{ day }}</td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

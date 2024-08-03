@@ -314,7 +314,8 @@
 
         <div class="main-content">
             <header class="header">
-                <h1>{% block header %}Dashboard{% endblock %}</h1>
+                <p class="welcome-message">{% block header %}Welcome, {{ request.user.get_full_name|default:request.user.username }}{% endblock %}</p>
+                
                 <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
             </header>
 

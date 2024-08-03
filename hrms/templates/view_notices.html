@@ -2,205 +2,131 @@
 
 {% block title %}View Notices{% endblock %}
 
+{% block content_title %}Notices{% endblock %}
+
 {% block content %}
-<div class="main-content">
-    <div class="header">
-        <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-        <h1>View Notices</h1>
-    </div>
-    <div class="content">
-        {% if user.is_admin %}
-        <a href="{% url 'post_notice' %}" class="post-notice-btn"><i class="fas fa-plus"></i> Post New Notice</a>
-        {% endif %}
-        <ul class="notice-list">
-            {% for notice in notices %}
-            <li class="notice-item">
-                <h2><a href="{% url 'notice_detail' notice.id %}" class="notice-title">{{ notice.title }}</a></h2>
-                <p class="notice-date">Posted on: {{ notice.date_posted }}</p>
-                <p class="notice-content">{{ notice.content }}</p>
-                {% if user.is_admin %}
-                <div class="notice-actions">
-                    <a href="{% url 'edit_notice' notice.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
-                    <a href="{% url 'delete_notice' notice.id %}" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</a>
-                </div>
-                {% endif %}
-            </li>
-            {% empty %}
-            <li class="empty-message">No notices available.</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-
 <style>
-    :root {
-        --primary-color: #4a90e2;
-        --secondary-color: #f5f7fa;
-        --text-color: #333;
-        --text-light: #777;
-        --success-color: #27ae60;
-        --warning-color: #f39c12;
-        --danger-color: #e74c3c;
-        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s ease;
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--secondary-color);
-        color: var(--text-color);
-        line-height: 1.6;
-    }
-
-    .main-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
-
-    .header h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-    }
-
     .content {
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: var(--card-shadow);
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
     .post-notice-btn {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.75rem 1.5rem;
-        background-color: var(--primary-color);
-        color: white;
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #00aabb;
+        color: #ffffff;
+        border-radius: 5px;
         text-decoration: none;
-        border-radius: 8px;
-        transition: var(--transition);
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease;
     }
 
     .post-notice-btn:hover {
-        background-color: #3178c6;
-    }
-
-    .post-notice-btn i {
-        margin-right: 0.5rem;
+        background-color: #009aab;
     }
 
     .notice-list {
-        list-style: none;
+        list-style-type: none;
         padding: 0;
-        margin: 0;
     }
 
     .notice-item {
-        margin-bottom: 2rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid var(--secondary-color);
+        background-color: #ffffff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    .notice-header {
+        border-bottom: 1px solid #eeeeee;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
     }
 
     .notice-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--primary-color);
+        color: #333333;
         text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
     }
 
     .notice-title:hover {
-        color: #3178c6;
+        text-decoration: underline;
     }
 
     .notice-date {
-        font-size: 0.875rem;
-        color: var(--text-light);
-        margin-bottom: 0.5rem;
+        font-size: 14px;
+        color: #888888;
     }
 
     .notice-content {
-        font-size: 1rem;
-        margin-bottom: 1rem;
+        font-size: 16px;
+        color: #555555;
     }
 
     .notice-actions {
-        display: flex;
-        gap: 1rem;
+        margin-top: 10px;
     }
 
     .edit-btn, .delete-btn {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        font-weight: 600;
+        display: inline-block;
+        padding: 8px 12px;
+        font-size: 14px;
         text-decoration: none;
-        transition: var(--transition);
+        color: #ffffff;
+        border-radius: 3px;
+        margin-right: 10px;
+        transition: background-color 0.3s ease;
     }
 
     .edit-btn {
-        background-color: var(--warning-color);
-        color: white;
+        background-color: #007bff;
     }
 
     .edit-btn:hover {
-        background-color: #e67e22;
+        background-color: #0056b3;
     }
 
     .delete-btn {
-        background-color: var(--danger-color);
-        color: white;
+        background-color: #dc3545;
     }
 
     .delete-btn:hover {
-        background-color: #c0392b;
+        background-color: #c82333;
     }
 
     .empty-message {
-        font-style: italic;
-        color: var(--text-light);
         text-align: center;
-    }
-
-    @media (max-width: 768px) {
-        .header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .post-notice-btn {
-            padding: 0.5rem 1rem;
-        }
-
-        .notice-title {
-            font-size: 1rem;
-        }
-
-        .notice-content {
-            font-size: 0.875rem;
-        }
-
-        .notice-actions {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .edit-btn, .delete-btn {
-            padding: 0.5rem 0.75rem;
-        }
+        color: #888888;
     }
 </style>
+
+<div class="">
+    {% if user.is_admin %}
+    <a href="{% url 'post_notice' %}" class="post-notice-btn"><i class="fas fa-plus"></i> Post New Notice</a>
+    {% endif %}
+    <ul class="notice-list">
+        {% for notice in notices %}
+        <li class="notice-item">
+            <div class="notice-header">
+                <h2><a href="{% url 'notice_detail' notice.id %}" class="notice-title">{{ notice.title }}</a></h2>
+                <p class="notice-date">Posted on: {{ notice.date_posted }}</p>
+            </div>
+            <p class="notice-content">{{ notice.content }}</p>
+            {% if user.is_admin %}
+            <div class="notice-actions">
+                <a href="{% url 'edit_notice' notice.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                <a href="{% url 'delete_notice' notice.id %}" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</a>
+            </div>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li class="empty-message">No notices available.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
