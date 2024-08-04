@@ -2,9 +2,22 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from .views import (
+    DailyAttendanceReportView,
+    WeeklyAttendanceReportView,
+    MonthlyAttendanceReportView,
+    MyAttendanceReportView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('report/daily/', DailyAttendanceReportView.as_view(), name='daily_attendance_report'),
+    path('report/daily/<str:date>/', DailyAttendanceReportView.as_view(), name='daily_attendance_report'),
+    path('report/weekly/', WeeklyAttendanceReportView.as_view(), name='weekly_attendance_report'),
+    path('report/weekly/<str:start_date>/', WeeklyAttendanceReportView.as_view(), name='weekly_attendance_report'),
+    path('report/monthly/', MonthlyAttendanceReportView.as_view(), name='monthly_attendance_report'),
+    path('report/monthly/<int:year>/<int:month>/', MonthlyAttendanceReportView.as_view(), name='monthly_attendance_report'),
+    path('report/my/', MyAttendanceReportView.as_view(), name='my_attendance_report'),
     path('about/', views.about, name='about'),
     path('help/', views.help, name='help'),
     path('more/', views.more, name='more'),

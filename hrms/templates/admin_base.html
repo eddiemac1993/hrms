@@ -102,7 +102,7 @@
 
         .main-content {
             flex: 1;
-            padding: 2rem 3rem;
+            padding: 1rem 2rem;
             margin-left: var(--sidebar-width);
             transition: margin-left 0.3s ease;
         }
@@ -136,10 +136,6 @@
         }
 
         .content {
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
             transition: all 0.3s ease;
         }
 
@@ -190,7 +186,9 @@
             border-radius: var(--border-radius);
             font-size: 0.8rem;
         }
-
+        .active {
+            font-weight: bold;
+        }
         a:focus, button:focus {
             outline: 2px solid var(--accent-color);
         }
@@ -289,11 +287,14 @@
                 </li>
                 <li>
                     <a href="{% url 'attendance_list' %}" class="{% if request.resolver_match.url_name == 'attendance_list' %}active{% endif %}">
-                        <i class="fas fa-check-circle"></i> Attendance
+                        <i class="fas fa-check-circle"></i> Attendance <i class="fas fa-chevron-down"></i>
                     </a>
+                    <ul>
+                        <li><a href="{% url 'daily_attendance_report' %}"><i class="fas fa-calendar-day"></i> Daily Attendance Report</a></li>
+                        <li><a href="{% url 'weekly_attendance_report' %}"><i class="fas fa-calendar-week"></i> Weekly Attendance Report</a></li>
+                        <li><a href="{% url 'monthly_attendance_report' %}"><i class="fas fa-calendar-alt"></i> Monthly Attendance Report</a></li>
+                    </ul>
                 </li>
-
-
                 <li>
                     <a href="{% url 'view_notices' %}" class="{% if request.resolver_match.url_name == 'view_notices' %}active{% endif %}">
                         <i class="fas fa-bell"></i> Notice Board
@@ -314,10 +315,18 @@
 
         <div class="main-content">
             <header class="header">
-                <p class="welcome-message">{% block header %}Welcome, {{ request.user.get_full_name|default:request.user.username }}{% endblock %}</p>
-                
-                <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-            </header>
+    <p class="welcome-message">
+        {% block header %}
+        Welcome,
+        {% if request.user.is_superuser %}
+            Provincial {{ request.user.get_full_name|default:request.user.username }}
+        {% else %}
+            {{ request.user.get_full_name|default:request.user.username }} | Duty station: {{ duty_station.name }}
+        {% endif %}
+        {% endblock %}
+    </p>
+    <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+</header>
 
             <div class="content">
                 <h2>{% block content_title %}Section Title{% endblock %}</h2>

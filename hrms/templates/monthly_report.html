@@ -1,0 +1,14 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Attendance List{% endblock %}
+
+{% block content_title %}Attendance List{% endblock %}
+
+{% block content %}
+  <h2>Monthly Attendance Report for {{ month }}/{{ year }}</h2>
+  <ul>
+    {% for record in attendance %}
+      <li>{{ record.date }}: {{ record.employee.user.get_full_name }} - In: {{ record.time_in }} | Out: {{ record.time_out }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

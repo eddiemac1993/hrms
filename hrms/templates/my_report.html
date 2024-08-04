@@ -1,0 +1,12 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Attendance List{% endblock %}
+
+{% block content_title %}Attendance List{% endblock %}
+
+{% block content %}
+  <h2>My Attendance Summary</h2>
+  <p>Total Days: {{ summary.total_days }}</p>
+  <p>Present Days: {{ summary.present_days }}</p>
+  <p>Absent Days: {{ summary.absent_days }}</p>
+{% endblock %}

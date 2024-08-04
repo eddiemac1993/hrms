@@ -3,6 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.utils import timezone
+from datetime import timedelta
 from geopy.distance import distance
 
 class DutyStation(models.Model):
@@ -115,6 +116,26 @@ class Attendance(models.Model):
         lat, lon = map(float, location_str.split(','))
         return lat, lon
 
+    @classmethod
+    def get_daily_report(cls, date):
+        return cls.objects.filter(date=date)
+
+    @classmethod
+    def get_weekly_report(cls, start_date):
+        end_date = start_date + timedelta(days=6)
+        return cls.objects.filter(date__range=[start_date, end_date])
+
+    @classmethod
+    def get_monthly_report(cls, year, month):
+        return cls.objects.filter(date__year=year, date__month=month)
+
+    @classmethod
+    def get_summary_report(cls, employee):
+        return {
+            'total_days': cls.objects.filter(employee=employee).count(),
+            'present_days': cls.objects.filter(employee=employee, time_in__isnull=False).count(),
+            'absent_days': cls.objects.filter(employee=employee, time_in__isnull=True).count(),
+        }
 
 class Payslip(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)

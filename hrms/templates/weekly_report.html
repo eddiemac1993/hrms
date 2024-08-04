@@ -1,0 +1,14 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Attendance List{% endblock %}
+
+{% block content_title %}Attendance List{% endblock %}
+
+{% block content %}
+  <h2>Weekly Attendance Report from {{ start_date }} to {{ start_date|date:"Y-m-d"|add:"6 days" }}</h2>
+  <ul>
+    {% for record in attendance %}
+      <li>{{ record.date }}: {{ record.employee.user.get_full_name }} - In: {{ record.time_in }} | Out: {{ record.time_out }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

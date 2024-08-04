@@ -232,6 +232,46 @@ def attendance_list(request):
 
     return render(request, 'attendance_list.html', {'attendances': attendances})
 
+from django.shortcuts import render
+from django.views import View
+from .models import Attendance
+from django.utils import timezone
+from datetime import datetime
+
+class DailyAttendanceReportView(View):
+    def get(self, request, date=None):
+        if date is None:
+            date = timezone.now().date()
+        else:
+            date = datetime.strptime(date, '%Y-%m-%d').date()
+        attendance = Attendance.get_daily_report(date)
+        return render(request, 'daily_report.html', {'attendance': attendance, 'date': date})
+
+class WeeklyAttendanceReportView(View):
+    def get(self, request, start_date=None):
+        if start_date is None:
+            start_date = timezone.now().date()
+        else:
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        attendance = Attendance.get_weekly_report(start_date)
+        return render(request, 'weekly_report.html', {'attendance': attendance, 'start_date': start_date})
+
+class MonthlyAttendanceReportView(View):
+    def get(self, request, year=None, month=None):
+        if year is None or month is None:
+            now = timezone.now()
+            year = now.year
+            month = now.month
+        attendance = Attendance.get_monthly_report(year, month)
+        return render(request, 'monthly_report.html', {'attendance': attendance, 'year': year, 'month': month})
+
+class MyAttendanceReportView(View):
+    def get(self, request):
+        employee = request.user.employee
+        summary = Attendance.get_summary_report(employee)
+        return render(request, 'my_report.html', {'summary': summary, 'employee': employee})
+
+
 def employee_detail(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     return render(request, 'employee_detail.html', {'employee': employee})
